@@ -2,7 +2,7 @@
 """Generate index.html — 证券行业简报及同业对标
    新设计：纯数据驱动，JS动态渲染公司卡片，期间切换联动简报链接"""
 
-import os, re, json
+import os, re, json, shutil
 
 # ── Config ──
 PERIODS = ['2026Q1', '2025Q3']
@@ -19,8 +19,78 @@ CODE_TO_NAME = {
 }
 NAME_TO_CODE = {v:k for k,v in CODE_TO_NAME.items()}
 
+COMPANIES = ['广发证券', '中信证券', '招商证券', '中信建投', '国泰海通', '华泰证券', '中国银河', '中金公司']
+
 DASHBOARD_DIR = '/Users/peter/Desktop/券商分析数据/行业分析'
-OUT_PATH = '/Users/peter/Desktop/git/index.html'
+DATA_DIR = '/Users/peter/Desktop/券商分析数据'
+GIT_DIR = '/Users/peter/Desktop/git'
+OUT_PATH = os.path.join(GIT_DIR, 'index.html')
+
+# ── Step 0: Sync dashboard and brief files to git folder ──
+def sync_files():
+    print("⏳ 同步文件到 git 文件夹...")
+    count = 0
+
+    # Dashboard files (with nav-link injection for triangle navigation)
+    for p in PERIODS:
+        src = os.path.join(DASHBOARD_DIR, f'8家券商_{p}_分析仪表板.html')
+        dst = os.path.join(GIT_DIR, f'8家券商_{p}_分析仪表板.html')
+        if not os.path.exists(src):
+            print(f"  ✗ 未找到仪表板: {src}")
+            continue
+        other = '2025Q3' if p == '2026Q1' else '2026Q1'
+        with open(src, 'r', encoding='utf-8') as f:
+            content = f.read()
+        # Inject nav-links into dashboard (idempotent - checks if already present)
+        if 'class="nav-link"' not in content:
+            # CSS
+            content = content.replace(
+                '.tab-nav { display: flex; background: #fff;',
+                '.tab-nav { display: flex; align-items: center; background: #fff;'
+            )
+            content = content.replace(
+                '.tab-btn.active { color: #0f3460; border-bottom-color: #0f3460; font-weight: 600; }',
+                '.tab-btn.active { color: #0f3460; border-bottom-color: #0f3460; font-weight: 600; }\n'
+                '.nav-link { padding: 14px 16px; font-size: 13px; font-weight: 500; color: #888; text-decoration: none; white-space: nowrap; transition: color 0.15s; }\n'
+                '.nav-link:hover { color: #0f3460; }\n'
+                '.nav-sep { display: inline-block; width: 1px; height: 24px; background: #d0d5dd; margin: 0 4px; flex-shrink: 0; }'
+            )
+            # Responsive
+            content = content.replace(
+                '.tab-btn { padding: 10px 12px; font-size: 12px; }',
+                '.tab-btn { padding: 10px 12px; font-size: 12px; }\n    .nav-link { padding: 10px 12px; font-size: 12px; }'
+            )
+            # HTML nav links
+            content = content.replace(
+                '<div class="tab-nav" id="tabNav">\n<button class="tab-btn active">',
+                f'<div class="tab-nav" id="tabNav">\n'
+                f'<a href="index.html" class="nav-link">← 返回首页</a>\n'
+                f'<a href="8家券商_{other}_分析仪表板.html" class="nav-link">{other}</a>\n'
+                f'<span class="nav-sep"></span>\n'
+                f'<button class="tab-btn active">'
+            )
+        with open(dst, 'w', encoding='utf-8') as f:
+            f.write(content)
+        print(f"  ✓ 仪表板: 8家券商_{p}_分析仪表板.html")
+        count += 1
+
+    # Brief files (one per company per period)
+    for company in COMPANIES:
+        brief_src_dir = os.path.join(DATA_DIR, company, '简报')
+        brief_dst_dir = os.path.join(GIT_DIR, '简报', company)
+        os.makedirs(brief_dst_dir, exist_ok=True)
+        for p in PERIODS:
+            fname = f'{company}_{p}_财务简报_无分析.html'
+            src = os.path.join(brief_src_dir, fname)
+            dst = os.path.join(brief_dst_dir, fname)
+            if os.path.exists(src):
+                shutil.copy2(src, dst)
+                count += 1
+            else:
+                print(f"  ✗ 未找到简报: {company}/{p}")
+    print(f"  ✓ 共同步 {count} 个文件\n")
+
+sync_files()
 
 KPI_FIELDS = [
     ('营业总收入', 'revenue', 'yi', False),

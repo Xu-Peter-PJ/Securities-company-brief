@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>华泰证券 三季报 财务简报</title>
+<style>* { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "PingFang SC","Microsoft YaHei","Noto Sans SC",sans-serif;
+    background: linear-gradient(135deg, #eef3f8 0%, #e4ecf6 100%);
+    padding: 24px 32px 32px;
+    font-size: 14px;
+    color: #2c3e50;
+  }
+
+  .container { max-width: 1280px; margin: 0 auto; }
+
+  /* === Header === */
+  .report-header {
+    background: linear-gradient(135deg, #1a2a5e 0%, #1e3a7a 50%, #2a5aaa 100%);
+    border-radius: 16px;
+    padding: 28px 36px;
+    margin-bottom: 28px;
+    box-shadow: 0 4px 20px rgba(26,42,94,0.15);
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+  }
+  .report-header::before {
+    content: '';
+    position: absolute;
+    top: -40%;
+    right: -15%;
+    width: 350px;
+    height: 350px;
+    background: radial-gradient(circle, rgba(100,160,255,0.08) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .report-header .company { font-size: 22px; font-weight: 700; letter-spacing: 3px; margin-bottom: 6px; }
+  .report-header .company .code { color: #8ab4f8; font-weight: 500; }
+  .report-header .subtitle { font-size: 13px; opacity: 0.85; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+  .report-header .badge { background: rgba(255,255,255,0.12); padding: 3px 14px; border-radius: 20px; font-size: 12px; color: #b0caf0; border: 1px solid rgba(255,255,255,0.08); }
+
+  /* === Section === */
+  .section { background: #fff; border-radius: 14px; padding: 22px 28px; margin-bottom: 28px; box-shadow: 0 2px 16px rgba(30,60,120,0.06); overflow-x: visible; }
+  .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .table-scroll::-webkit-scrollbar { height: 5px; }
+  .table-scroll::-webkit-scrollbar-track { background: #eaf0f8; border-radius: 3px; }
+  .table-scroll::-webkit-scrollbar-thumb { background: #b8cfe8; border-radius: 3px; }
+  .section-title { font-size: 15px; font-weight: 700; color: #1a2a5e; border-left: 3px solid #3a7ae8; padding-left: 12px; margin-bottom: 18px; letter-spacing: 1px; }
+  .section-subtitle { font-size: 12px; color: #7a8aaa; margin-bottom: 14px; margin-top: -8px; }
+
+  /* === KPI Grid === */
+  .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .kpi-card { background: #f0f6fe; border: 1px solid #d8e6f8; border-radius: 12px; padding: 16px 20px; transition: border-color 0.2s, box-shadow 0.2s; }
+  .kpi-card:hover { border-color: #8ab4f8; box-shadow: 0 2px 12px rgba(58,122,232,0.08); }
+  .kpi-card .label { font-size: 11px; color: #6a8aaa; font-weight: 500; margin-bottom: 6px; letter-spacing: 0.5px; }
+  .kpi-card .value { font-size: 22px; font-weight: 700; color: #1a2a5e; margin-bottom: 4px; font-variant-numeric: tabular-nums; }
+  .kpi-card .change { font-size: 12px; font-weight: 600; }
+  .kpi-card.highlight { background: linear-gradient(135deg, #eaf2fc, #f0f6fe); border-color: #b8d0f0; }
+
+  /* === Tables === */
+  .data-table { width: 100%; border-collapse: collapse; font-size: 12.5px; min-width: 520px; }
+  .data-table th { background: #1a2a5e; color: #d0e0f8; font-weight: 600; padding: 10px 10px; text-align: right; border-bottom: 2px solid #c8d8f0; white-space: nowrap; font-size: 11.5px; letter-spacing: 0.5px; }
+  .data-table th:first-child { text-align: left; }
+  .data-table td { padding: 8px 10px; border-bottom: 1px solid #eaf0f8; text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; color: #3a4a6a; }
+  .data-table td:first-child { text-align: left; font-weight: 500; color: #1a2a5e; }
+  .data-table tr:hover td { background: #f0f6fe; }
+  .data-table .section-total td { font-weight: 700; font-size: 14px; color: #1a3a7a; background: #eaf2fc; border-top: 2px solid #c8d8f0; border-bottom: 2px solid #c8d8f0; }
+  .data-table .primary-item td { background: #eaf2fc; font-weight: 700; color: #1a2a5e; border-top: 2px solid #d8e6f8; }
+  .data-table .primary-item td:first-child { padding-left: 18px; color: #2a5aaa; }
+  .data-table .sub-item td { padding-left: 40px; color: #4a6a8a; font-size: 12.2px; font-weight: 500; }
+  .data-table .sub-item2 td { padding-left: 60px; color: #6a8aaa; font-size: 12px; }
+  .data-table .num { font-family: "SF Mono","Consolas","Courier New",monospace; font-size: 13px; color: #1a2a5e; }
+  .data-table .pct { font-weight: 600; font-size: 13px; }
+
+  /* === Revenue Bar === */
+  .rev-bar-wrap { margin: 12px 0 16px; }
+  .rev-bar-label { display: flex; justify-content: space-between; font-size: 12px; color: #6a8aaa; margin-bottom: 5px; flex-wrap: wrap; gap: 8px; }
+  .rev-bar { display: flex; height: 12px; border-radius: 6px; overflow: hidden; background: #d8e6f8; min-width: 200px; }
+  .rev-bar-fee { background: linear-gradient(90deg, #1a3a7a, #3a7ae8); }
+  .rev-bar-inv { background: linear-gradient(90deg, #2a5a9a, #4a8ad8); }
+  .rev-bar-assoc { background: linear-gradient(90deg, #3a7a9a, #5a9ad0); }
+  .rev-bar-int { background: linear-gradient(90deg, #4a8aba, #6aaaf0); }
+  .rev-bar-other { background: linear-gradient(90deg, #8ab0d8, #b0d0f0); }
+  .rev-bar-label span { font-weight: 600; color: #6a8aaa; }
+  .rev-bar-label span.cur { color: #1a3a7a; }
+
+  /* === Cost Cards === */
+  .info-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .info-card { background: #f0f6fe; border: 1px solid #d8e6f8; border-radius: 10px; padding: 14px 18px; }
+  .info-card .title { font-size: 11px; color: #6a8aaa; margin-bottom: 5px; font-weight: 500; }
+  .info-card .val { font-size: 18px; font-weight: 700; color: #1a2a5e; }
+  .info-card .sub { font-size: 11px; color: #7a8aaa; margin-top: 3px; }
+
+  /* === Analysis Boxes === */
+  .analysis-box { background: #f4f8fe; border: 1px solid #d8e6f8; border-radius: 10px; padding: 16px 20px; margin-bottom: 14px; }
+  .analysis-box h4 { font-size: 13px; color: #2a5aaa; font-weight: 700; margin-bottom: 10px; border-bottom: 1px solid #d8e6f8; padding-bottom: 6px; }
+  .analysis-box p { font-size: 13px; color: #3a4a6a; line-height: 1.9; margin-bottom: 8px; text-align: justify; }
+  .analysis-box .highlight-num { color: #2a5aaa; font-weight: 700; }
+  .analysis-box .up { color: #d32f2f; font-weight: 600; }
+  .analysis-box .down { color: #388e3c; font-weight: 600; }
+  .analysis-box.risk-box { background: linear-gradient(135deg, #fdf0f0, #fde8e8); border-color: #e0a0a0; }
+  .analysis-box.risk-box h4 { color: #b71c1c; border-bottom-color: #e0a0a0; }
+
+  /* === Footer === */
+  .footer { text-align: center; font-size: 11px; color: #8a9aaa; padding: 12px; line-height: 1.8; }
+
+  /* === Save Button === */
+  #save-btn {
+    position: fixed;
+    bottom: 20px; right: 20px;
+    background: linear-gradient(135deg, #1a3a7a, #2a5aaa);
+    color: #fff;
+    padding: 10px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(26,58,122,0.2);
+    font-size: 13px;
+    z-index: 9999;
+    border: none;
+    transition: all 0.2s;
+  }
+  #save-btn:hover { background: linear-gradient(135deg, #2a4a8a, #3a6aba); box-shadow: 0 4px 16px rgba(26,58,122,0.3); }
+
+  [contenteditable]:focus { outline: 2px dashed #3a7ae8; background: rgba(240,246,254,0.8); border-radius: 4px; cursor: text; padding: 4px; }
+  [contenteditable]:hover { outline: 1px dashed #b0caf0; border-radius: 4px; cursor: text; }
+
+  .divider { height:1px; background: linear-gradient(90deg, transparent, #c8d8f0, transparent); margin: 8px 0; }
+
+  /* === Responsive === */
+  @media (max-width: 600px) {
+    body { padding: 10px; font-size: 13px; }
+    .report-header { padding: 16px 18px !important; border-radius: 12px !important; }
+    .report-header .company { font-size: 17px !important; letter-spacing: 1px !important; }
+    .report-header .subtitle { font-size: 11px !important; flex-direction: column; gap: 6px; }
+    .kpi-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 8px !important; }
+    .kpi-card { padding: 12px 14px !important; }
+    .kpi-card .value { font-size: 17px !important; }
+    .kpi-card .label { font-size: 10px !important; }
+    .section { padding: 14px 16px !important; margin-bottom: 16px !important; border-radius: 12px !important; }
+    .section-title { font-size: 13px !important; margin-bottom: 12px !important; }
+    .section-subtitle { font-size: 11px !important; }
+    .data-table { font-size: 11px !important; min-width: 440px; }
+    .data-table th, .data-table td { padding: 5px 6px !important; }
+    .analysis-box { padding: 12px 14px !important; }
+    .analysis-box p { font-size: 12px !important; line-height: 1.7 !important; }
+    .analysis-box h4 { font-size: 12px !important; }
+    .info-grid { grid-template-columns: 1fr !important; gap: 8px; }
+    .info-card { padding: 12px 14px !important; }
+    .info-card .val { font-size: 15px !important; }
+    .rev-bar-label { font-size: 10px !important; flex-wrap: wrap; gap: 4px; }
+    #save-btn { bottom: 10px; right: 10px; padding: 7px 12px; font-size: 11px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+    <div class="report-header">
+      <div class="company">华泰证券股份有限公司 · 601688</div>
+      <div class="subtitle">
+        <span>2025年第三季度报告 · <strong>合并报表</strong> · 未经审计</span>
+        <span class="badge">📊 财务简报</span>
+      </div>
+    </div>
+
+<!-- 核心指标 -->
+<div class="section">
+  <div class="section-title">核心指标 <span style="font-size:11px;color:#999;font-weight:400;border-left:1px solid #ddd;padding-left:8px;margin-left:8px;">单位：亿元 ｜ 上期数｜同比 ｜ pct=百分点</span></div>
+  <div class="kpi-grid">
+      <div class="kpi-card highlight">
+        <div class="label">营业总收入</div>
+        <div class="value">271.29亿</div>
+        <div class="change" style="font-size:11px;color:#5a6a8a;">上期 117.23亿 ｜ 同比 <span style="color:#d32f2f">+131.41%</span></div>
+      </div>
+      <div class="kpi-card">
+        <div class="label">归母净利润</div>
+        <div class="value">127.33亿</div>
+        <div class="change" style="font-size:11px;color:#5a6a8a;">上期 72.11亿 ｜ 同比 <span style="color:#d32f2f">+76.58%</span></div>
+      </div>
+      <div class="kpi-card">
+        <div class="label">扣非归母净利润</div>
+        <div class="value">126.39亿</div>
+        <div class="change" style="font-size:11px;color:#5a6a8a;">上期 10.60亿 ｜ 同比 <span style="color:#d32f2f">+1092.11%</span></div>
+      </div>
+      <div class="kpi-card">
+        <div class="label">加权平均ROE</div>
+        <div class="value">7.21%</div>
+        <div class="change" style="font-size:11px;color:#5a6a8a;">上期 4.41% ｜ 同比 <span style="color:#d32f2f">+2.80</span> pct</div>
+      </div>
+      <div class="kpi-card">
+        <div class="label">基本每股收益</div>
+        <div class="value">1.35 元</div>
+        <div class="change" style="font-size:11px;color:#5a6a8a;">上期 0.78 元 ｜ 同比 <span style="color:#d32f2f">+0.57</span> 元</div>
+      </div>
+      <div class="kpi-card">
+        <div class="label">营收净利润率</div>
+        <div class="value">46.6%</div>
+        <div class="change" style="font-size:11px;color:#5a6a8a;">上期 9.0% ｜ 同比 <span style="color:#d32f2f">+37.55</span> pct</div>
+      </div>
+  </div>
+</div>
+
+<!-- 收入结构 -->
+<div class="section">
+  <div class="section-title">收入结构与变动</div>
+  <div class="section-subtitle">单位：万元 ｜ 红色=同比增加，绿色=同比减少 ｜ ← 左右滑动查看完整表格 →</div>
+    <div class="rev-bar-wrap">
+        <div class="rev-bar-label">
+          <span>收入结构</span>
+          <span class="cur">营业总收入 2,712,862.42万</span>
+        </div>
+        <div class="rev-bar">
+          <div class="rev-bar-fee" style="width:37.4%;" title="手续费佣金 37.4%"></div>
+          <div class="rev-bar-inv" style="width:37.1%;" title="投资表现 37.1%"></div>
+          <div class="rev-bar-int" style="width:12.1%;" title="利息净收入 12.1%"></div>
+          <div class="rev-bar-assoc" style="width:10.9%;" title="合联营收益 10.9%"></div>
+          <div class="rev-bar-other" style="width:2.6%;" title="其他 2.6%"></div>
+        </div>
+        <div style="display:flex;gap:16px;margin-top:6px;font-size:11px;color:#5a6a8a;flex-wrap:wrap;">
+          <span style="color:#0f3460;">■ 手续费佣金 37.4%</span>
+          <span style="color:#2e5c8a;">■ 投资表现 37.1%</span>
+          <span style="color:#5a8ab8;">■ 利息净收入 12.1%</span>
+          <span style="color:#3a7a9a;">■ 合联营收益 10.9%</span>
+          <span style="color:#8fb0d0;">■ 其他 2.6%</span>
+        </div>
+      </div>
+  <div class="table-scroll">
+  <table class="data-table">
+    <thead>
+      <tr><th>项目名称</th><th>2025Q3（万元）</th><th>上期（万元）</th><th>同比变动</th><th>占营收比重（本期）</th><th>占营收比重（上期）</th></tr>
+    </thead>
+    <tbody>
+      <tr class="section-total">
+        <td>一、营业总收入</td>
+        <td class="num">2,712,862.42万</td>
+        <td class="num">1,172,311.14万</td>
+        <td class="pct"><span style="color:#d32f2f">+131.41%</span></td>
+        <td>100.00%</td>
+        <td>100.00%</td>
+      </tr>
+      <tr class="primary-item">
+        <td>手续费及佣金净收入</td>
+        <td class="num">1,014,296.29万</td>
+        <td class="num">923,444.43万</td>
+        <td class="pct"><span style="color:#d32f2f">+9.84%</span></td>
+        <td>37.4%</td>
+        <td>78.8%</td>
+      </tr>
+      <tr class="sub-item">
+        <td>经纪业务手续费净收入</td>
+        <td class="num">658,820.79万</td>
+        <td class="num">396,555.95万</td>
+        <td class="pct"><span style="color:#d32f2f">+66.14%</span></td>
+        <td>-</td>
+        <td>-</td>
+      </tr>
+      <tr class="sub-item">
+        <td>投资银行业务手续费净收入</td>
+        <td class="num">194,781.24万</td>
+        <td class="num">135,723.11万</td>
+        <td class="pct"><span style="color:#d32f2f">+43.51%</span></td>
+        <td>-</td>
+        <td>-</td>
+      </tr>
+      <tr class="sub-item">
+        <td>资产管理业务手续费净收入</td>
+        <td class="num">135,444.22万</td>
+        <td class="num">374,124.00万</td>
+        <td class="pct"><span style="color:#388e3c">-63.80%</span></td>
+        <td>-</td>
+        <td>-</td>
+      </tr>
+      <tr class="primary-item">
+        <td>利息净收入</td>
+        <td class="num">327,000.33万</td>
+        <td class="num">130,141.02万</td>
+        <td class="pct"><span style="color:#d32f2f">+151.27%</span></td>
+        <td>12.1%</td>
+        <td>11.1%</td>
+      </tr>
+      <tr class="sub-item">
+        <td>利息收入</td>
+        <td class="num">1,003,600.46万</td>
+        <td class="num">993,564.88万</td>
+        <td class="pct"><span style="color:#d32f2f">+1.01%</span></td>
+        <td>-</td>
+        <td>-</td>
+      </tr>
+      <tr class="sub-item">
+        <td>利息支出</td>
+        <td class="num">676,600.13万</td>
+        <td class="num">863,423.87万</td>
+        <td class="pct"><span style="color:#388e3c">-21.64%</span></td>
+        <td>-</td>
+        <td>-</td>
+      </tr>
+      <tr class="primary-item">
+        <td>投资表现</td>
+        <td class="num">1,005,360.54万</td>
+        <td class="num">1,177,049.34万</td>
+        <td class="pct"><span style="color:#388e3c">-14.59%</span></td>
+        <td>37.1%</td>
+        <td>100.4%</td>
+      </tr>
+      <tr class="sub-item">
+        <td>投资收益</td>
+        <td class="num">1,614,026.74万</td>
+        <td class="num">1,347,759.38万</td>
+        <td class="pct"><span style="color:#d32f2f">+19.76%</span></td>
+        <td>-</td>
+        <td>-</td>
+      </tr>
+      <tr class="sub-item2">
+        <td>其中：对联营企业和合营企业的投资收益</td>
+        <td class="num">296,576.75万</td>
+        <td class="num">161,133.55万</td>
+        <td class="pct"><span style="color:#d32f2f">+84.06%</span></td>
+        <td>-</td>
+        <td>-</td>
+      </tr>
+      <tr class="sub-item">
+        <td>公允价值变动损益</td>
+        <td class="num">-295,108.40万</td>
+        <td class="num">8,833.96万</td>
+        <td class="pct"><span style="color:#388e3c">-3440.61%</span></td>
+        <td>-</td>
+        <td>-</td>
+      </tr>
+      <tr class="sub-item">
+        <td>汇兑损益</td>
+        <td class="num">-16,981.04万</td>
+        <td class="num">-18,410.45万</td>
+        <td class="pct"><span style="color:#d32f2f">+7.76%</span></td>
+        <td>-</td>
+        <td>-</td>
+      </tr>
+      <tr class="primary-item">
+        <td>合联营收益</td>
+        <td class="num">296,576.75万</td>
+        <td class="num">161,133.55万</td>
+        <td class="pct"><span style="color:#d32f2f">+84.06%</span></td>
+        <td>10.9%</td>
+        <td>13.7%</td>
+      </tr>
+      <tr class="primary-item">
+        <td>其他表现</td>
+        <td class="num">69,628.51万</td>
+        <td class="num">18,539.41万</td>
+        <td class="pct"><span style="color:#d32f2f">+275.57%</span></td>
+        <td>2.6%</td>
+        <td>1.6%</td>
+      </tr>
+      <tr class="sub-item">
+        <td>其他收益</td>
+        <td class="num">12,331.16万</td>
+        <td class="num">7,750.39万</td>
+        <td class="pct"><span style="color:#d32f2f">+59.10%</span></td>
+        <td>-</td>
+        <td>-</td>
+      </tr>
+      <tr class="sub-item">
+        <td>其他业务收入</td>
+        <td class="num">56,924.48万</td>
+        <td class="num">10,531.56万</td>
+        <td class="pct"><span style="color:#d32f2f">+440.51%</span></td>
+        <td>-</td>
+        <td>-</td>
+      </tr>
+      <tr class="sub-item">
+        <td>资产处置损益</td>
+        <td class="num">372.88万</td>
+        <td class="num">257.46万</td>
+        <td class="pct"><span style="color:#d32f2f">+44.83%</span></td>
+        <td>-</td>
+        <td>-</td>
+      </tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<!-- 金融资产配置 -->
+<div class="section">
+  <div class="section-title">金融资产配置（资产负债表）</div>
+  <div class="section-subtitle">单位：亿元 &nbsp;|&nbsp; 2026Q1末 vs 上期末</div>
+  <div class="table-scroll">
+  <table class="data-table">
+    <thead><tr><th>科目</th><th>2025Q3末</th><th>上期末</th><th>变动额</th><th>变动%</th></tr></thead>
+    <tbody>
+      <tr class="primary-item"><td>金融资产</td><td class="num">4,625.51亿</td><td class="num">3,974.60亿</td><td class="num"><span style="color:#d32f2f">+650.91亿</span></td><td class="pct"><span style="color:#d32f2f">+16.38%</span></td></tr>
+      <tr class="sub-item"><td>交易性金融资产</td><td class="num">3,610.35亿</td><td class="num">3,017.47亿</td><td class="num"><span style="color:#d32f2f">+592.89亿</span></td><td class="pct"><span style="color:#d32f2f">+19.65%</span></td></tr>
+      <tr class="sub-item"><td>债权投资</td><td class="num">455.03亿</td><td class="num">477.94亿</td><td class="num"><span style="color:#388e3c">-22.90亿</span></td><td class="pct"><span style="color:#388e3c">-4.79%</span></td></tr>
+      <tr class="sub-item"><td>其他债权投资</td><td class="num">455.03亿</td><td class="num">477.94亿</td><td class="num"><span style="color:#388e3c">-22.90亿</span></td><td class="pct"><span style="color:#388e3c">-4.79%</span></td></tr>
+      <tr class="sub-item"><td>其他权益工具投资</td><td class="num">105.09亿</td><td class="num">1.26亿</td><td class="num"><span style="color:#d32f2f">+103.83亿</span></td><td class="pct"><span style="color:#d32f2f">+8249.74%</span></td></tr>
+      <tr class="primary-item"><td>融出资金</td><td class="num">1,697.76亿</td><td class="num">1,325.46亿</td><td class="num"><span style="color:#d32f2f">+372.30亿</span></td><td class="pct"><span style="color:#d32f2f">+28.09%</span></td></tr>
+    </tbody>
+  </table>
+  </div>
+</div>
+
+<!-- 成本费用 -->
+<div class="section">
+  <div class="section-title">成本费用</div>
+  <div class="info-grid">
+      <div class="info-card">
+        <div class="title">业务及管理费</div>
+        <div class="val">117.03亿</div>
+        <div class="sub">上期: 118.12亿 · 同比 <span style="color:#388e3c">-0.92%</span></div>
+      </div>
+      <div class="info-card">
+        <div class="title">业务及管理费占营收比</div>
+        <div class="val">43.1%</div>
+        <div class="sub">上期: 100.8% · 同比 <span style="color:#388e3c">-57.6 pct</span></div>
+      </div>
+      <div class="info-card">
+        <div class="title">应付职工薪酬（期末）</div>
+        <div class="val">133.40亿</div>
+        <div class="sub">上期: 107.06亿 · 同比 <span style="color:#d32f2f">+24.61%</span></div>
+      </div>
+      <div class="info-card">
+        <div class="title">支付给职工及为职工支付的现金</div>
+        <div class="val">54.87亿</div>
+        <div class="sub">上期: 83.91亿 · 同比 <span style="color:#388e3c">-34.61%</span></div>
+      </div>
+  </div>
+</div>
+
+
+
+<div class="footer">
+  数据来源：华泰证券 2025年第三季度报告 · 合并利润表及资产负债表（未经审计）<br>
+  营收净利润率 = 扣非归母净利润 ÷ 营业总收入 × 100%<br>
+  投资表现 = 投资收益 + 公允价值变动损益 + 汇兑损益 - 其中：对联营企业和合营企业的投资收益<br>
+  其他表现 = 其他收益 + 其他业务收入 + 资产处置损益<br>
+  颜色说明：红色=同比增加（正面），绿色=同比减少（负面）<br>
+  本简报由Peter的简报生成Skill自动生成
+</div>
+
+</div>
+
+
+
+<script>
+function saveEdited() {
+  const htmlContent = document.documentElement.outerHTML;
+  const blob = new Blob([htmlContent], {type: 'text/html'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = '华泰证券_2025Q3_财务简报_已编辑.html';
+  a.click();
+  URL.revokeObjectURL(url);
+  const btn = document.getElementById('save-btn');
+  btn.textContent = '✅ 已保存';
+  setTimeout(() => {
+    btn.textContent = '💾 保存修改';
+  }, 2000);
+}
+</script>
+
+</body>
+</html>
