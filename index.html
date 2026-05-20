@@ -1,0 +1,1464 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>券商财务简报 · 汇总首页</title>
+<style>
+
+* { margin:0; padding:0; box-sizing:border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  background: #f5f7fa;
+  color: #1a1a2e;
+  min-height: 100vh;
+}
+.sticky-header-wrap { position: sticky; top: 0; z-index: 100; }
+.header {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  color: #fff;
+  padding: 28px 32px;
+}
+.header h1 { font-size: 22px; font-weight: 700; letter-spacing: 2px; }
+.header p { font-size: 13px; opacity: 0.7; margin-top: 4px; }
+
+/* ── Tab Navigation ── */
+.tab-nav {
+  display: flex;
+  background: #fff;
+  border-bottom: 2px solid #e8ecf1;
+  padding: 0 16px;
+  overflow-x: auto;
+}
+.tab-btn {
+  padding: 14px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #666;
+  cursor: pointer;
+  border: none;
+  background: none;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.tab-btn:hover { color: #1a1a2e; background: #f0f2f5; }
+.tab-btn.active { color: #0f3460; border-bottom-color: #0f3460; font-weight: 600; }
+
+/* ── Tab Content ── */
+.tab-content { display: none; padding: 24px; max-width: 1440px; margin: 0 auto; }
+.tab-content.active { display: block; }
+
+/* ── Period Section ── */
+.period-section { margin-bottom: 32px; }
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.section-header-left { display: flex; align-items: baseline; gap: 12px; }
+.section-header h2 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1a1a2e;
+  padding-left: 12px;
+  border-left: 4px solid #0f3460;
+}
+.section-date { font-size: 12px; color: #888; }
+.section-links { display: flex; flex-wrap: wrap; gap: 6px; }
+.report-link-mini {
+  display: inline-block;
+  font-size: 11px;
+  color: #0f3460;
+  background: #eef2f8;
+  padding: 4px 10px;
+  border-radius: 12px;
+  text-decoration: none;
+  transition: all 0.15s;
+  border: 1px solid transparent;
+}
+.report-link-mini:hover {
+  background: #d8e4f0;
+  border-color: #b0c8e0;
+}
+
+/* ── Table ── */
+.table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.table-scroll::-webkit-scrollbar { height: 5px; }
+.table-scroll::-webkit-scrollbar-track { background: #eaf0f8; border-radius: 3px; }
+.table-scroll::-webkit-scrollbar-thumb { background: #b8cfe8; border-radius: 3px; }
+
+.data-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 13px;
+  min-width: 760px;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+.data-table thead { position: sticky; top: 0; z-index: 10; }
+.data-table th {
+  background: #1a2a5e;
+  color: #d0e0f8;
+  font-weight: 600;
+  padding: 10px 10px;
+  text-align: center;
+  border-bottom: 2px solid #c8d8f0;
+  white-space: nowrap;
+  font-size: 12.5px;
+  letter-spacing: 0.5px;
+}
+.data-table th:first-child {
+  text-align: center;
+  width: 130px;
+  min-width: 130px;
+  position: sticky;
+  left: 0;
+  z-index: 11;
+  background: #1a2a5e;
+}
+.data-table .sub-th {
+  background: #2a4a7a;
+  font-size: 11px;
+  font-weight: 500;
+  padding: 6px 6px;
+}
+.data-table td {
+  padding: 10px 8px;
+  text-align: center;
+  border-bottom: 1px solid #eaf0f8;
+  white-space: nowrap;
+  color: #3a4a6a;
+  font-size: 12.5px;
+}
+.data-table td:first-child {
+  text-align: left;
+  position: sticky;
+  left: 0;
+  z-index: 9;
+  background: #fff;
+  box-shadow: 2px 0 6px rgba(0,0,0,0.06);
+  padding: 10px 12px;
+}
+.data-table td.num { font-weight: 700; color: #1a2a5e; }
+.data-table td.na { color: #ccc; }
+.data-table td.chg { font-size: 11px; font-weight: 600; }
+.data-table td.chg.up { color: #d32f2f; }
+.data-table td.chg.down { color: #388e3c; }
+.data-table tr:hover td { background: #f4f8fe; }
+.data-table tr:hover td:first-child { background: #eef4fc; }
+
+.td-company {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.td-company-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+}
+.company-link {
+  font-weight: 700;
+  color: #1a2a5e;
+  text-decoration: none;
+  font-size: 13px;
+  transition: color 0.15s;
+}
+.company-link:hover { color: #3a7ae8; text-decoration: underline; }
+.td-stock-code {
+  font-size: 10px;
+  color: #8a9aaa;
+  font-weight: 400;
+}
+.rank-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  line-height: 26px;
+  background: #d8e6f8;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 700;
+  color: #1a2a5e;
+  flex-shrink: 0;
+}
+
+/* ── Dashboard Link ── */
+.dashboard-section {
+  margin-top: 40px;
+  text-align: center;
+}
+.dashboard-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #1a2a5e, #2a5aaa);
+  color: #fff;
+  padding: 16px 32px;
+  border-radius: 12px;
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 600;
+  transition: all 0.2s;
+  box-shadow: 0 4px 16px rgba(26,42,94,0.15);
+}
+.dashboard-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(26,42,94,0.25);
+}
+.dashboard-link .icon { font-size: 24px; }
+
+/* ── Footer ── */
+.footer {
+  text-align: center;
+  padding: 24px;
+  color: #999;
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .header { padding: 16px 12px; }
+  .header h1 { font-size: 16px; }
+  .header p { font-size: 11px; }
+  .tab-nav { padding: 0 8px; }
+  .tab-btn { padding: 10px 12px; font-size: 12px; }
+  .tab-content { padding: 12px; }
+  .section-header { flex-direction: column; align-items: flex-start; }
+  .section-header h2 { font-size: 15px; }
+  .data-table { font-size: 11px; min-width: 600px; }
+  .data-table th, .data-table td { padding: 6px 6px; }
+  .report-link-mini { font-size: 10px; padding: 3px 8px; }
+  .dashboard-link { padding: 12px 20px; font-size: 13px; }
+}
+
+</style>
+</head>
+<body>
+<div class="sticky-header-wrap">
+<div class="header">
+<h1>📊 8家券商财务简报 · 汇总首页</h1>
+<p>中信建投 · 中信证券 · 中国银河 · 中金公司 · 华泰证券 · 国泰海通 · 广发证券 · 招商证券 ｜ 由Peter的行业分析Skill自动生成</p>
+</div>
+<div class="tab-nav" id="tabNav">
+<button class="tab-btn active" data-tab="tab0">2026年一季报</button>
+<button class="tab-btn" data-tab="tab1">2025年年报</button>
+<button class="tab-btn" data-tab="tab2">2025年三季报</button>
+<button class="tab-btn" data-tab="tab3">2025年半年报</button>
+<button class="tab-btn" data-tab="tab4">2025年一季报</button>
+<button class="tab-btn" data-tab="tab5">📈 行业分析仪表板</button>
+</div>
+</div>
+<div class="tab-content active" id="tab0">
+<div class="period-section">
+<div class="section-header">
+<div class="section-header-left">
+<h2>2026年一季报</h2>
+<span class="section-date">8家券商</span>
+</div>
+<div class="section-links">
+<a href="中信建投_2026Q1_财务简报.html" class="report-link-mini">中信建投</a>
+<a href="中信证券_2026Q1_财务简报.html" class="report-link-mini">中信证券</a>
+<a href="中国银河_2026Q1_财务简报.html" class="report-link-mini">中国银河</a>
+<a href="中金公司_2026Q1_财务简报.html" class="report-link-mini">中金公司</a>
+<a href="华泰证券_2026Q1_财务简报.html" class="report-link-mini">华泰证券</a>
+<a href="国泰海通_2026Q1_财务简报.html" class="report-link-mini">国泰海通</a>
+<a href="广发证券_2026Q1_财务简报.html" class="report-link-mini">广发证券</a>
+<a href="招商证券_2026Q1_财务简报.html" class="report-link-mini">招商证券</a>
+</div>
+</div>
+<div class="table-scroll">
+<table class="data-table">
+<thead>
+<tr>
+<th style="min-width:130px">公司</th>
+<th colspan="2">营业总收入</th>
+<th colspan="2">归母净利润</th>
+<th colspan="2">扣非归母净利润</th>
+<th colspan="2">加权平均ROE</th>
+<th colspan="2">基本每股收益</th>
+<th colspan="2">营收净利润率</th>
+</tr>
+<tr>
+<th></th>
+<th class="sub-th">本期</th><th class="sub-th">同比</th>
+<th class="sub-th">本期</th><th class="sub-th">同比</th>
+<th class="sub-th">本期</th><th class="sub-th">同比</th>
+<th class="sub-th">本期</th><th class="sub-th">同比</th>
+<th class="sub-th">本期</th><th class="sub-th">同比</th>
+<th class="sub-th">本期</th><th class="sub-th">同比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<div class="td-company">
+<span class="rank-num">🥇</span>
+<div class="td-company-info">
+<a href="中信证券_2026Q1_财务简报.html" class="company-link">中信证券</a>
+<span class="td-stock-code">600030</span>
+</div>
+</div>
+</td>
+<td class="num">231.55亿</td>
+<td class="chg up">上期 164.32亿 ｜ 同比 +40.91%</td>
+<td class="num">102.16亿</td>
+<td class="chg up">上期 65.45亿 ｜ 同比 +56.09%</td>
+<td class="num">102.03亿</td>
+<td class="chg up">上期 64.37亿 ｜ 同比 +58.50%</td>
+<td class="num">3.46%</td>
+<td class="chg up">上期 2.37% ｜ 同比 +1.09 pct</td>
+<td class="num">0.67 元</td>
+<td class="chg up">上期 0.42 元 ｜ 同比 +0.25 元</td>
+<td class="num">44.1%</td>
+<td class="chg up">上期 39.2% ｜ 同比 +4.9 pct</td>
+</tr>
+<tr>
+<td>
+<div class="td-company">
+<span class="rank-num">🥈</span>
+<div class="td-company-info">
+<a href="国泰海通_2026Q1_财务简报.html" class="company-link">国泰海通</a>
+<span class="td-stock-code">600837</span>
+</div>
+</div>
+</td>
+<td class="num">162.32亿</td>
+<td class="chg up">上期 102.15亿 ｜ 同比 +58.91%</td>
+<td class="num">63.88亿</td>
+<td class="chg down">上期 122.42亿 ｜ 同比 -47.82%</td>
+<td class="num">57.11亿</td>
+<td class="chg up">上期 32.93亿 ｜ 同比 +73.43%</td>
+<td class="num">1.95%</td>
+<td class="chg down">上期 6.46% ｜ 同比 -4.51 pct</td>
+<td class="num">0.36 元</td>
+<td class="chg down">上期 1.16 元 ｜ 同比 -0.80 元</td>
+<td class="num">35.2%</td>
+<td class="chg up">上期 32.2% ｜ 同比 +2.9 pct</td>
+</tr>
+<tr>
+<td>
+<div class="td-company">
+<span class="rank-num">🥉</span>
+<div class="td-company-info">
+<a href="广发证券_2026Q1_财务简报.html" class="company-link">广发证券</a>
+<span class="td-stock-code">000776</span>
+</div>
+</div>
+</td>
+<td class="num">116.82亿</td>
+<td class="chg up">上期 71.09亿 ｜ 同比 +64.33%</td>
+<td class="num">47.07亿</td>
+<td class="chg up">上期 27.57亿 ｜ 同比 +70.73%</td>
+<td class="num">47.11亿</td>
+<td class="chg up">上期 27.32亿 ｜ 同比 +72.40%</td>
+<td class="num">3.32%</td>
+<td class="chg up">上期 2.06% ｜ 同比 +1.26 pct</td>
+<td class="num">0.58 元</td>
+<td class="chg up">上期 0.33 元 ｜ 同比 +0.25 元</td>
+<td class="num">40.3%</td>
+<td class="chg up">上期 38.4% ｜ 同比 +1.9 pct</td>
+</tr>
+<tr>
+<td>
+<div class="td-company">
+<span class="rank-num">#4</span>
+<div class="td-company-info">
+<a href="华泰证券_2026Q1_财务简报.html" class="company-link">华泰证券</a>
+<span class="td-stock-code">601688</span>
+</div>
+</div>
+</td>
+<td class="num">104.22亿</td>
+<td class="chg up">上期 73.66亿 ｜ 同比 +41.48%</td>
+<td class="num">48.00亿</td>
+<td class="chg up">上期 36.42亿 ｜ 同比 +31.79%</td>
+<td class="num">48.02亿</td>
+<td class="chg up">上期 36.14亿 ｜ 同比 +32.86%</td>
+<td class="num">2.61%</td>
+<td class="chg up">上期 2.10% ｜ 同比 +0.51 pct</td>
+<td class="num">0.51 元</td>
+<td class="chg up">上期 0.38 元 ｜ 同比 +0.13 元</td>
+<td class="num">46.1%</td>
+<td class="chg down">上期 49.1% ｜ 同比 -3.0 pct</td>
+</tr>
+<tr>
+<td>
+<div class="td-company">
+<span class="rank-num">#5</span>
+<div class="td-company-info">
+<a href="中金公司_2026Q1_财务简报.html" class="company-link">中金公司</a>
+<span class="td-stock-code">601995</span>
+</div>
+</div>
+</td>
+<td class="num">88.25亿</td>
+<td class="chg up">上期 57.21亿 ｜ 同比 +54.26%</td>
+<td class="num">35.77亿</td>
+<td class="chg up">上期 20.42亿 ｜ 同比 +75.19%</td>
+<td class="num">35.38亿</td>
+<td class="chg up">上期 20.08亿 ｜ 同比 +76.14%</td>
+<td class="num">3.35%</td>
+<td class="chg up">上期 1.98% ｜ 同比 +1.37 pct</td>
+<td class="num">0.70 元</td>
+<td class="chg up">上期 0.38 元 ｜ 同比 +0.32 元</td>
+<td class="num">40.1%</td>
+<td class="chg up">上期 35.1% ｜ 同比 +5.0 pct</td>
+</tr>
+<tr>
+<td>
+<div class="td-company">
+<span class="rank-num">#6</span>
+<div class="td-company-info">
+<a href="中信建投_2026Q1_财务简报.html" class="company-link">中信建投</a>
+<span class="td-stock-code">601066</span>
+</div>
+</div>
+</td>
+<td class="num">76.96亿</td>
+<td class="chg up">上期 47.43亿 ｜ 同比 +62.26%</td>
+<td class="num">36.67亿</td>
+<td class="chg up">上期 18.43亿 ｜ 同比 +99.03%</td>
+<td class="num">36.23亿</td>
+<td class="chg up">上期 18.35亿 ｜ 同比 +97.44%</td>
+<td class="num">4.02%</td>
+<td class="chg up">上期 2.04% ｜ 同比 +1.98 pct</td>
+<td class="num">0.44 元</td>
+<td class="chg up">上期 0.20 元 ｜ 同比 +0.24 元</td>
+<td class="num">47.1%</td>
+<td class="chg up">上期 38.7% ｜ 同比 +8.4 pct</td>
+</tr>
+<tr>
+<td>
+<div class="td-company">
+<span class="rank-num">#7</span>
+<div class="td-company-info">
+<a href="中国银河_2026Q1_财务简报.html" class="company-link">中国银河</a>
+<span class="td-stock-code">601881</span>
+</div>
+</div>
+</td>
+<td class="num">73.55亿</td>
+<td class="chg up">上期 63.59亿 ｜ 同比 +15.66%</td>
+<td class="num">33.20亿</td>
+<td class="chg up">上期 30.16亿 ｜ 同比 +10.09%</td>
+<td class="num">33.20亿</td>
+<td class="chg up">上期 30.21亿 ｜ 同比 +9.91%</td>
+<td class="num">2.53%</td>
+<td class="chg up">上期 2.44% ｜ 同比 +0.09 pct</td>
+<td class="num">0.28 元</td>
+<td class="chg up">上期 0.25 元 ｜ 同比 +0.03 元</td>
+<td class="num">45.1%</td>
+<td class="chg down">上期 47.5% ｜ 同比 -2.4 pct</td>
+</tr>
+<tr>
+<td>
+<div class="td-company">
+<span class="rank-num">#8</span>
+<div class="td-company-info">
+<a href="招商证券_2026Q1_财务简报.html" class="company-link">招商证券</a>
+<span class="td-stock-code">600999</span>
+</div>
+</div>
+</td>
+<td class="num">69.73亿</td>
+<td class="chg up">上期 47.13亿 ｜ 同比 +47.96%</td>
+<td class="num">32.71亿</td>
+<td class="chg up">上期 23.08亿 ｜ 同比 +41.73%</td>
+<td class="num">32.69亿</td>
+<td class="chg up">上期 23.07亿 ｜ 同比 +41.70%</td>
+<td class="num">2.54%</td>
+<td class="chg up">上期 1.87% ｜ 同比 +0.67 pct</td>
+<td class="num">0.36 元</td>
+<td class="chg up">上期 0.25 元 ｜ 同比 +0.11 元</td>
+<td class="num">46.9%</td>
+<td class="chg down">上期 48.9% ｜ 同比 -2.1 pct</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+</div>
+</div>
+<div class="tab-content" id="tab1">
+<div class="period-section">
+<div class="section-header">
+<div class="section-header-left">
+<h2>2025年年报</h2>
+<span class="section-date">8家券商</span>
+</div>
+<div class="section-links">
+<a href="中信建投_2025FY_财务简报.html" class="report-link-mini">中信建投</a>
+<a href="中信证券_2025FY_财务简报.html" class="report-link-mini">中信证券</a>
+<a href="中国银河_2025FY_财务简报.html" class="report-link-mini">中国银河</a>
+<a href="中金公司_2025FY_财务简报.html" class="report-link-mini">中金公司</a>
+<a href="华泰证券_2025FY_财务简报.html" class="report-link-mini">华泰证券</a>
+<a href="国泰海通_2025FY_财务简报.html" class="report-link-mini">国泰海通</a>
+<a href="广发证券_2025FY_财务简报.html" class="report-link-mini">广发证券</a>
+<a href="招商证券_2025FY_财务简报.html" class="report-link-mini">招商证券</a>
+</div>
+</div>
+<div class="table-scroll">
+<table class="data-table">
+<thead>
+<tr>
+<th style="min-width:130px">公司</th>
+<th colspan="2">营业总收入</th>
+<th colspan="2">归母净利润</th>
+<th colspan="2">扣非归母净利润</th>
+<th colspan="2">加权平均ROE</th>
+<th colspan="2">基本每股收益</th>
+<th colspan="2">营收净利润率</th>
+</tr>
+<tr>
+<th></th>
+<th class="sub-th">本期</th><th class="sub-th">同比</th>
+<th class="sub-th">本期</th><th class="sub-th">同比</th>
+<th class="sub-th">本期</th><th class="sub-th">同比</th>
+<th class="sub-th">本期</th><th class="sub-th">同比</th>
+<th class="sub-th">本期</th><th class="sub-th">同比</th>
+<th class="sub-th">本期</th><th class="sub-th">同比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<div class="td-company">
+<span class="rank-num">🥇</span>
+<div class="td-company-info">
+<a href="中信证券_2025FY_财务简报.html" class="company-link">中信证券</a>
+<span class="td-stock-code">600030</span>
+</div>
+</div>
+</td>
+<td class="num">748.54亿</td>
+<td class="chg up">上期 581.19亿 ｜ 同比 +28.79%</td>
+<td class="num">300.76亿</td>
+<td class="chg up">上期 217.04亿 ｜ 同比 +38.58%</td>
+<td class="num">303.03亿</td>
+<td class="chg up">上期 215.66亿 ｜ 同比 +40.51%</td>
+<td class="num">10.59%</td>
+<td class="chg up">上期 8.09% ｜ 同比 +2.50 pct</td>
+<td class="num">1.96 元</td>
+<td class="chg up">上期 1.41 元 ｜ 同比 +39.01%</td>
+<td class="num">40.48%</td>
+<td class="chg up">上期 37.11% ｜ 同比 +3.37 pct</td>
+</tr>
+<tr>
+<td>
+<div class="td-company">
+<span class="rank-num">🥈</span>
+<div class="td-company-info">
+<a href="国泰海通_2025FY_财务简报.html" class="company-link">国泰海通</a>
+<span class="td-stock-code">600837</span>
+</div>
+</div>
+</td>
+<td class="num">631.07亿</td>
+<td class="chg up">上期 336.75亿 ｜ 同比 +87.40%</td>
+<td class="num">278.09亿</td>
+<td class="chg up">上期 130.24亿 ｜ 同比 +113.52%</td>
+<td class="num">213.88亿</td>
+<td class="chg up">上期 124.40亿 ｜ 同比 +71.93%</td>
+<td class="num">9.78%</td>
+<td class="chg up">上期 8.14% ｜ 同比 +1.64 pct</td>
+<td class="num">1.74 元</td>
+<td class="chg up">上期 1.39 元 ｜ 同比 +25.18%</td>
+<td class="num">44.1%</td>
+<td class="chg up">上期 38.7% ｜ 同比 +5.4 pct</td>
+</tr>
+<tr>
+<td>
+<div class="td-company">
+<span class="rank-num">🥉</span>
+<div class="td-company-info">
+<a href="华泰证券_2025FY_财务简报.html" class="company-link">华泰证券</a>
+<span class="td-stock-code">601688</span>
+</div>
+</div>
+</td>
+<td class="num">358.10亿</td>
+<td class="chg up">上期 335.19亿 ｜ 同比 +6.83%</td>
+<td class="num">163.83亿</td>
+<td class="chg up">上期 153.51亿 ｜ 同比 +6.72%</td>
+<td class="num">162.68亿</td>
+<td class="chg up">上期 90.34亿 ｜ 同比 +80.08%</td>
+<td class="num">9.20%</td>
+<td class="chg down">上期 9.24% ｜ 同比 -0.04 pct</td>
+<td class="num">1.73元</td>
+<td class="chg up">上期 1.62元 ｜ 同比 +6.79%</td>
+<td class="num">45.43%</td>
+<td class="chg up">上期 26.95% ｜ 同比 +18.48 pct</td>
+</tr>
+<tr>
+<td>
+<div class="td-company">
+<span class="rank-num">#4</span>
+<div class="td-company-info">
+<a href="广发证券_2025FY_财务简报.html" class="company-link">广发证券</a>
+<span class="td-stock-code">000776</span>
+</div>
+</div>
+</td>
+<td class="num">354.93亿</td>
+<td class="chg up">上期 264.22亿 ｜ 同比 +34.33%</td>
+<td class="num">137.02亿</td>
+<td class="chg up">上期 96.37亿 ｜ 同比 +42.18%</td>
+<td class="num">142.57亿</td>
+<td class="chg up">上期 89.15亿 ｜ 同比 +59.93%</td>
+<td class="num">10.16%</td>
+<td class="chg up">上期 7.44% ｜ 同比 +2.72 pct</td>
+<td class="num">1.68 元</td>
+<td class="chg up">上期 1.15 元 ｜ +0.53 元</td>
+<td class="num">40.2%</td>
+<td class="chg up">上期 33.7% ｜ +6.4 pct</td>
+</tr>
+<tr>
+<td>
+<div class="td-company">
+<span class="rank-num">#5</span>
+<div class="td-company-info">
+<a href="中金公司_2025FY_财务简报.html" class="company-link">中金公司</a>
+<span class="td-stock-code">601995</span>
+</div>
+</div>
+</td>
+<td class="num">284.81亿</td>
+<td class="chg up">上期 213.33亿 ｜ 同比 +33.50%</td>
+<td class="num">97.91亿</td>
+<td class="chg up">上期 56.94亿 ｜ 同比 +71.93%</td>
+<td class="num">96.57亿</td>
+<td class="chg up">上期 56.56亿 ｜ 同比 +70.73%</td>
+<td class="num">9.39%</td>
+<td class="chg up">上期 5.52% ｜ 同比 +3.87 pct</td>
+<td class="num">1.876 元</td>
+<td class="chg up">上期 1.035 元 ｜ 同比 +81.26%</td>
+<td class="num">33.9%</td>
+<td class="chg up">上期 26.5% ｜ 同比 +7.4 pct</td>
+</tr>
+<tr>
+<td>
+<div class="td-company">
+<span class="rank-num">#6</span>
+<div class="td-company-info">
+<a href="中国银河_2025FY_财务简报.html" class="company-link">中国银河</a>
+<span class="td-stock-code">601881</span>
+</div>
+</div>
+</td>
+<td class="num">283.02亿</td>
+<td class="chg up">上期 227.62亿 ｜ 同比 +24.34%</td>
+<td class="num">144.13亿</td>
+<td class="chg up">上期 84.14亿 ｜ 同比 +71.30%</td>
+<td class="num">143.98亿</td>
+<td class="chg up">上期 83.56亿 ｜ 同比 +72.26%</td>
+<td class="num">9.27%</td>
+<td class="chg up">上期 6.59% ｜ 同比 +2.68 pct</td>
+<td class="num">1.22元</td>
+<td class="chg up">上期 0.72元 ｜ 同比 +69.44%</td>
+<td class="num">50.93%</td>
+<td class="chg up">上期 36.97% ｜ 同比 +13.96 pct</td>
+</tr>
+<tr>
+<td>
+<div class="td-company">
+<span class="rank-num">#7</span>
+<div class="td-company-info">
+<a href="招商证券_2025FY_财务简报.html" class="company-link">招商证券</a>
+<span class="td-stock-code">600999</span>
+</div>
+</div>
+</td>
+<td class="num">249.72亿</td>
+<td class="chg up">上期 208.91亿 ｜ 同比 +19.53%</td>
+<td class="num">123.50亿</td>
+<td class="chg up">上期 103.86亿 ｜ 同比 +18.91%</td>
+<td class="num">122.99亿</td>
+<td class="chg up">上期 103.77亿 ｜ 同比 +18.52%</td>
+<td class="num">9.94%</td>
+<td class="chg up">上期 8.82% ｜ 同比 +1.12 pct</td>
+<td class="num">1.35 元</td>
+<td class="chg up">上期 1.13 元 ｜ 同比 +19.47%</td>
+<td class="num">49.25%</td>
+<td class="chg down">上期 49.67% ｜ 同比 -0.42 pct</td>
+</tr>
+<tr>
+<td>
+<div class="td-company">
+<span class="rank-num">#8</span>
+<div class="td-company-info">
+<a href="中信建投_2025FY_财务简报.html" class="company-link">中信建投</a>
+<span class="td-stock-code">601066</span>
+</div>
+</div>
+</td>
+<td class="num">233.22亿</td>
+<td class="chg up">上期 190.53亿 ｜ 同比 +22.41%</td>
+<td class="num">94.39亿</td>
+<td class="chg up">上期 72.23亿 ｜ 同比 +30.68%</td>
+<td class="num">94.68亿</td>
+<td class="chg up">上期 72.40亿 ｜ 同比 +30.77%</td>
+<td class="num">10.51%</td>
+<td class="chg up">上期 8.22% ｜ 同比 +2.29 pct</td>
+<td class="num">1.09 元</td>
+<td class="chg up">上期 0.79 元 ｜ 同比 +37.97%</td>
+<td class="num">40.6%</td>
+<td class="chg up">上期 38.0% ｜ 同比 +2.6 pct</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+</div>
+</div>
+<div class="tab-content" id="tab2">
+<div class="period-section">
+<div class="section-header">
+<div class="section-header-left">
+<h2>2025年三季报</h2>
+<span class="section-date">8家券商</span>
+</div>
+<div class="section-links">
+<a href="中信建投_2025Q3_财务简报.html" class="report-link-mini">中信建投</a>
+<a href="中信证券_2025Q3_财务简报.html" class="report-link-mini">中信证券</a>
+<a href="中国银河_2025Q3_财务简报.html" class="report-link-mini">中国银河</a>
+<a href="中金公司_2025Q3_财务简报.html" class="report-link-mini">中金公司</a>
+<a href="华泰证券_2025Q3_财务简报.html" class="report-link-mini">华泰证券</a>
+<a href="国泰海通_2025Q3_财务简报.html" class="report-link-mini">国泰海通</a>
+<a href="广发证券_2025Q3_财务简报.html" class="report-link-mini">广发证券</a>
+<a href="招商证券_2025Q3_财务简报.html" class="report-link-mini">招商证券</a>
+</div>
+</div>
+<div class="table-scroll">
+<table class="data-table">
+<thead>
+<tr>
+<th style="min-width:130px">公司</th>
+<th colspan="2">营业总收入</th>
+<th colspan="2">归母净利润</th>
+<th colspan="2">扣非归母净利润</th>
+<th colspan="2">加权平均ROE</th>
+<th colspan="2">基本每股收益</th>
+<th colspan="2">营收净利润率</th>
+</tr>
+<tr>
+<th></th>
+<th class="sub-th">本期</th><th class="sub-th">同比</th>
+<th class="sub-th">本期</th><th class="sub-th">同比</th>
+<th class="sub-th">本期</th><th class="sub-th">同比</th>
+<th class="sub-th">本期</th><th class="sub-th">同比</th>
+<th class="sub-th">本期</th><th class="sub-th">同比</th>
+<th class="sub-th">本期</th><th class="sub-th">同比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<div class="td-company">
+<span class="rank-num">🥇</span>
+<div class="td-company-info">
+<a href="中信证券_2025Q3_财务简报.html" class="company-link">中信证券</a>
+<span class="td-stock-code">600030</span>
+</div>
+</div>
+</td>
+<td class="num">558.15亿</td>
+<td class="chg up">上期 420.60亿 ｜ 同比 +32.70%</td>
+<td class="num">126.29亿</td>
+<td class="chg up">上期 79.73亿 ｜ 同比 +58.39%</td>
+<td class="num">94.40亿</td>
+<td class="chg up">上期 62.29亿 ｜ 同比 +51.54%</td>
+<td class="num">3.24%</td>
+<td class="chg up">上期 2.34% ｜ 同比 +0.90 pct</td>
+<td class="num">0.62 元</td>
+<td class="chg up">上期 0.40 元 ｜ 同比 +0.22 元</td>
+<td class="num">16.9%</td>
+<td class="chg up">上期 14.8% ｜ 同比 +2.1 pct</td>
+</tr>
+<tr>
+<td>
+<div class="td-company">
+<span class="rank-num">🥈</span>
+<div class="td-company-info">
+<a href="国泰海通_2025Q3_财务简报.html" class="company-link">国泰海通</a>
+<span class="td-stock-code">600837</span>
+</div>
+</div>
+</td>
+<td class="num">458.92亿</td>
+<td class="chg up">上期 227.63亿 ｜ 同比 +101.60%</td>
+<td class="num">220.19亿</td>
+<td class="chg up">上期 119.31亿 ｜ 同比 +84.55%</td>
+<td class="num">117.73亿</td>
+<td class="chg up">上期 55.88亿 ｜ 同比 +110.69%</td>
+<td class="num">1.85%</td>
+<td class="chg down">上期 2.86% ｜ 同比 -1.01 pct</td>
+<td class="num">0.33 元</td>
+<td class="chg down">上期 0.49 元 ｜ 同比 -0.16 元</td>
+<td class="num">25.7%</td>
+<td class="chg up">上期 24.5% ｜ 同比 +1.1 pct</td>
+</tr>
+<tr>
+<td>
+<div class="td-company">
+<span class="rank-num">🥉</span>
+<div class="td-company-info">
+<a href="华泰证券_2025Q3_财务简报.html" class="company-link">华泰证券</a>
+<span class="td-stock-code">601688</span>
+</div>
+</div>
+</td>
+<td class="num">271.29亿</td>
+<td class="chg up">上期 241.03亿 ｜ 同比 +12.55%</td>
+<td class="num">105.38亿</td>
+<td class="chg down">上期 - ｜ 同比 -</td>
+<td class="num">59.89亿</td>
+<td class="chg down">上期 70.24亿 ｜ 同比 -14.74%</td>
+<td class="num">2.91%</td>
+<td class="chg down">上期 4.41% ｜ 同比 -1.50 pct</td>
+<td class="num">1.35 元</td>
+<td class="chg up">上期 1.33 元 ｜ 同比 +0.02 元</td>
+<td class="num">22.1%</td>
+<td class="chg down">上期 29.1% ｜ 同比 -7.1 pct</td>
+</tr>
+<tr>
+<td>
+<div class="td-company">
+<span class="rank-num">#4</span>
+<div class="td-company-info">
+<a href="广发证券_2025Q3_财务简报.html" class="company-link">广发证券</a>
+<span class="td-stock-code">000776</span>
+</div>
+</div>
+</td>
+<td class="num">261.64亿</td>
+<td class="chg up">上期 185.51亿 ｜ 同比 +41.04%</td>
+<td class="num">44.65亿</td>
+<td class="chg up">上期 24.02亿 ｜ 同比 +85.86%</td>
+<td class="num">44.00亿</td>
+<td class="chg up">上期 21.19亿 ｜ 同比 +107.69%</td>
+<td class="num">3.35%</td>
+<td class="chg up">上期 1.85% ｜ 同比 +1.50 pct</td>
+<td class="num">0.56 元</td>
+<td class="chg up">上期 0.29 元 ｜ 同比 +0.27 元</td>
+<td class="num">16.8%</td>
+<td class="chg up">上期 11.4% ｜ 同比 +5.4 pct</td>
+</tr>
+<tr>
+<td>
+<div class="td-company">
+<span class="rank-num">#5</span>
+<div class="td-company-info">
+<a href="中国银河_2025Q3_财务简报.html" class="company-link">中国银河</a>
+<span class="td-stock-code">601881</span>
+</div>
+</div>
+</td>
+<td class="num">227.51亿</td>
+<td class="chg up">上期 157.56亿 ｜ 同比 +44.39%</td>
+<td class="num">90.04亿</td>
+<td class="chg down">上期 100.00亿 ｜ 同比 -9.96%</td>
+<td class="num">56.19亿</td>
+<td class="chg up">上期 28.59亿 ｜ 同比 +96.52%</td>
+<td class="num">3.61%</td>
+<td class="chg up">上期 2.17% ｜ 同比 +1.44 pct</td>
+<td class="num">0.38 元</td>
+<td class="chg up">上期 0.20 元 ｜ 同比 +0.18 元</td>
+<td class="num">24.7%</td>
+<td class="chg up">上期 18.1% ｜ 同比 +6.6 pct</td>
+</tr>
+<tr>
+<td>
+<div class="td-company">
+<span class="rank-num">#6</span>
+<div class="td-company-info">
+<a href="中金公司_2025Q3_财务简报.html" class="company-link">中金公司</a>
+<span class="td-stock-code">601995</span>
+</div>
+</div>
+</td>
+<td class="num">207.61亿</td>
+<td class="chg up">上期 134.49亿 ｜ 同比 +54.36%</td>
+<td class="num">25.70亿</td>
+<td class="chg down">上期 77.27亿 ｜ 同比 -66.74%</td>
+<td class="num">22.43亿</td>
+<td class="chg down">上期 64.86亿 ｜ 同比 -65.42%</td>
+<td class="num">2.12%</td>
+<td class="chg up">上期 1.62% ｜ 同比 +0.50 pct</td>
+<td class="num">0.43 元</td>
+<td class="chg down">上期 357.47 元 ｜ 同比 -357.04 元</td>
+<td class="num">10.8%</td>
+<td class="chg down">上期 48.2% ｜ 同比 -37.4 pct</td>
+</tr>
+<tr>
+<td>
+<div class="td-company">
+<span class="rank-num">#7</span>
+<div class="td-company-info">
+<a href="招商证券_2025Q3_财务简报.html" class="company-link">招商证券</a>
+<span class="td-stock-code">600999</span>
+</div>
+</div>
+</td>
+<td class="num">182.44亿</td>
+<td class="chg up">上期 142.79亿 ｜ 同比 +27.76%</td>
+<td class="num">77.23亿</td>
+<td class="chg down">上期 182.44亿 ｜ 同比 -57.66%</td>
+<td class="num">42.92亿</td>
+<td class="chg down">上期 99.76亿 ｜ 同比 -56.98%</td>
+<td class="num">3.00%</td>
+<td class="chg up">上期 0.96% ｜ 同比 +2.04 pct</td>
+<td class="num">0.41 元</td>
+<td class="chg down">上期 57.69 元 ｜ 同比 -57.28 元</td>
+<td class="num">23.5%</td>
+<td class="chg down">上期 69.9% ｜ 同比 -46.3 pct</td>
+</tr>
+<tr>
+<td>
+<div class="td-company">
+<span class="rank-num">#8</span>
+<div class="td-company-info">
+<a href="中信建投_2025Q3_财务简报.html" class="company-link">中信建投</a>
+<span class="td-stock-code">601066</span>
+</div>
+</div>
+</td>
+<td class="num">172.89亿</td>
+<td class="chg up">上期 131.73亿 ｜ 同比 +31.25%</td>
+<td class="num">65.49亿</td>
+<td class="chg up">上期 47.87亿 ｜ 同比 +36.83%</td>
+<td class="num">31.90亿</td>
+<td class="chg up">上期 16.49亿 ｜ 同比 +93.54%</td>
+<td class="num">2.88%</td>
+<td class="chg up">上期 1.59% ｜ 同比 +1.29 pct</td>
+<td class="num">0.30 元</td>
+<td class="chg up">上期 0.15 元 ｜ 同比 +0.15 元</td>
+<td class="num">18.5%</td>
+<td class="chg up">上期 12.5% ｜ 同比 +5.9 pct</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+</div>
+</div>
+<div class="tab-content" id="tab3">
+<div class="period-section">
+<div class="section-header">
+<div class="section-header-left">
+<h2>2025年半年报</h2>
+<span class="section-date">8家券商</span>
+</div>
+<div class="section-links">
+<a href="中信建投_2025HY_财务简报.html" class="report-link-mini">中信建投</a>
+<a href="中信证券_2025HY_财务简报.html" class="report-link-mini">中信证券</a>
+<a href="中国银河_2025HY_财务简报.html" class="report-link-mini">中国银河</a>
+<a href="中金公司_2025HY_财务简报.html" class="report-link-mini">中金公司</a>
+<a href="华泰证券_2025HY_财务简报.html" class="report-link-mini">华泰证券</a>
+<a href="国泰海通_2025HY_财务简报.html" class="report-link-mini">国泰海通</a>
+<a href="广发证券_2025HY_财务简报.html" class="report-link-mini">广发证券</a>
+<a href="招商证券_2025HY_财务简报.html" class="report-link-mini">招商证券</a>
+</div>
+</div>
+<div class="table-scroll">
+<table class="data-table">
+<thead>
+<tr>
+<th style="min-width:130px">公司</th>
+<th colspan="2">营业总收入</th>
+<th colspan="2">归母净利润</th>
+<th colspan="2">扣非归母净利润</th>
+<th colspan="2">加权平均ROE</th>
+<th colspan="2">基本每股收益</th>
+<th colspan="2">营收净利润率</th>
+</tr>
+<tr>
+<th></th>
+<th class="sub-th">本期</th><th class="sub-th">同比</th>
+<th class="sub-th">本期</th><th class="sub-th">同比</th>
+<th class="sub-th">本期</th><th class="sub-th">同比</th>
+<th class="sub-th">本期</th><th class="sub-th">同比</th>
+<th class="sub-th">本期</th><th class="sub-th">同比</th>
+<th class="sub-th">本期</th><th class="sub-th">同比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<div class="td-company">
+<span class="rank-num">🥇</span>
+<div class="td-company-info">
+<a href="中信证券_2025HY_财务简报.html" class="company-link">中信证券</a>
+<span class="td-stock-code">600030</span>
+</div>
+</div>
+</td>
+<td class="num">330.39亿</td>
+<td class="chg up">上期 274.33亿 ｜ +20.44%</td>
+<td class="num">137.19亿</td>
+<td class="chg up">上期 105.70亿 ｜ +29.79%</td>
+<td class="num">135.71亿</td>
+<td class="chg up">上期 105.27亿 ｜ +28.92%</td>
+<td class="na">-</td>
+<td class="na">-</td>
+<td class="num">0.89元</td>
+<td class="chg up">上期 0.69元 ｜ +28.99%</td>
+<td class="num">41.08%</td>
+<td class="chg ">上期 38.37%</td>
+</tr>
+<tr>
+<td>
+<div class="td-company">
+<span class="rank-num">🥈</span>
+<div class="td-company-info">
+<a href="中金公司_2025HY_财务简报.html" class="company-link">中金公司</a>
+<span class="td-stock-code">601995</span>
+</div>
+</div>
+</td>
+<td class="num">315.93亿</td>
+<td class="chg up">上期 101.14亿 ｜ 同比 +212.36%</td>
+<td class="num">43.30亿</td>
+<td class="chg up">上期 22.28亿 ｜ 同比 +94.35%</td>
+<td class="num">42.43亿</td>
+<td class="chg up">上期 21.95亿 ｜ 同比 +93.30%</td>
+<td class="num">4.16%</td>
+<td class="chg up">上期 2.12% ｜ 同比 +2.04 pct</td>
+<td class="num">0.80 元</td>
+<td class="chg up">上期 0.39 元 ｜ 同比 +0.41 元</td>
+<td class="num">13.4%</td>
+<td class="chg down">上期 21.7% ｜ 同比 -8.3 pct</td>
+</tr>
+<tr>
+<td>
+<div class="td-company">
+<span class="rank-num">🥉</span>
+<div class="td-company-info">
+<a href="国泰海通_2025HY_财务简报.html" class="company-link">国泰海通</a>
+<span class="td-stock-code">600837</span>
+</div>
+</div>
+</td>
+<td class="num">238.72亿</td>
+<td class="chg up">上期 134.33亿 ｜ 同比 +77.71%</td>
+<td class="num">133.19亿</td>
+<td class="chg down">上期 - ｜ 同比 -</td>
+<td class="num">131.52亿</td>
+<td class="chg up">上期 69.33亿 ｜ 同比 +89.69%</td>
+<td class="num">-</td>
+<td class="chg down">上期 - ｜ 同比 -</td>
+<td class="num">- 元</td>
+<td class="chg down">上期 - 元 ｜ 同比 -</td>
+<td class="num">55.1%</td>
+<td class="chg up">上期 51.6% ｜ 同比 +3.5 pct</td>
+</tr>
+<tr>
+<td>
+<div class="td-company">
+<span class="rank-num">#4</span>
+<div class="td-company-info">
+<a href="广发证券_2025HY_财务简报.html" class="company-link">广发证券</a>
+<span class="td-stock-code">000776</span>
+</div>
+</div>
+</td>
+<td class="num">153.98亿</td>
+<td class="chg up">上期 114.59亿 ｜ 同比 +34.38%</td>
+<td class="num">64.70亿</td>
+<td class="chg up">上期 43.62亿 ｜ 同比 +48.31%</td>
+<td class="num">63.11亿</td>
+<td class="chg up">上期 43.67亿 ｜ 同比 +44.51%</td>
+<td class="num">4.94%</td>
+<td class="chg up">上期 4.18% ｜ 同比 +0.76 pct</td>
+<td class="num">0.70 元</td>
+<td class="chg up">上期 0.55 元 ｜ 同比 +0.15 元</td>
+<td class="num">41.0%</td>
+<td class="chg up">上期 38.1% ｜ 同比 +2.9 pct</td>
+</tr>
+<tr>
+<td>
+<div class="td-company">
+<span class="rank-num">#5</span>
+<div class="td-company-info">
+<a href="中国银河_2025HY_财务简报.html" class="company-link">中国银河</a>
+<span class="td-stock-code">601881</span>
+</div>
+</div>
+</td>
+<td class="num">137.47亿</td>
+<td class="chg up">上期 99.82亿 ｜ 同比 +37.71%</td>
+<td class="num">64.88亿</td>
+<td class="chg up">上期 43.88亿 ｜ 同比 +47.86%</td>
+<td class="num">64.85亿</td>
+<td class="chg up">上期 44.09亿 ｜ 同比 +47.09%</td>
+<td class="num">5.16%</td>
+<td class="chg up">上期 3.63% ｜ 同比 +1.53 pct</td>
+<td class="num">0.54 元</td>
+<td class="chg up">上期 0.35 元 ｜ 同比 +0.19 元</td>
+<td class="num">47.2%</td>
+<td class="chg up">上期 44.2% ｜ 同比 +3.0 pct</td>
+</tr>
+<tr>
+<td>
+<div class="td-company">
+<span class="rank-num">#6</span>
+<div class="td-company-info">
+<a href="中信建投_2025HY_财务简报.html" class="company-link">中信建投</a>
+<span class="td-stock-code">601066</span>
+</div>
+</div>
+</td>
+<td class="num">107.40亿</td>
+<td class="chg up">上期 89.55亿 ｜ 同比 +19.93%</td>
+<td class="num">45.09亿</td>
+<td class="chg up">上期 28.58亿 ｜ 同比 +57.77%</td>
+<td class="num">44.71亿</td>
+<td class="chg up">上期 28.32亿 ｜ 同比 +57.92%</td>
+<td class="num">-</td>
+<td class="chg down">上期 - ｜ 同比 -</td>
+<td class="num">- 元</td>
+<td class="chg down">上期 - 元 ｜ 同比 -</td>
+<td class="num">41.6%</td>
+<td class="chg up">上期 31.6% ｜ 同比 +10.0 pct</td>
+</tr>
+<tr>
+<td>
+<div class="td-company">
+<span class="rank-num">#7</span>
+<div class="td-company-info">
+<a href="招商证券_2025HY_财务简报.html" class="company-link">招商证券</a>
+<span class="td-stock-code">600999</span>
+</div>
+</div>
+</td>
+<td class="num">105.20亿</td>
+<td class="chg up">上期 95.95亿 ｜ 同比 +9.64%</td>
+<td class="num">51.86亿</td>
+<td class="chg up">上期 47.48亿 ｜ 同比 +9.23%</td>
+<td class="num">51.86亿</td>
+<td class="chg up">上期 47.48亿 ｜ 同比 +9.23%</td>
+<td class="num">-</td>
+<td class="chg down">上期 - ｜ 同比 -</td>
+<td class="num">- 元</td>
+<td class="chg down">上期 - 元 ｜ 同比 -</td>
+<td class="num">49.3%</td>
+<td class="chg down">上期 49.5% ｜ 同比 -0.2 pct</td>
+</tr>
+<tr>
+<td>
+<div class="td-company">
+<span class="rank-num">#8</span>
+<div class="td-company-info">
+<a href="华泰证券_2025HY_财务简报.html" class="company-link">华泰证券</a>
+<span class="td-stock-code">601688</span>
+</div>
+</div>
+</td>
+<td class="na">-</td>
+<td class="na">-</td>
+<td class="na">-</td>
+<td class="na">-</td>
+<td class="na">-</td>
+<td class="na">-</td>
+<td class="na">-</td>
+<td class="na">-</td>
+<td class="na">-</td>
+<td class="na">-</td>
+<td class="na">-</td>
+<td class="na">-</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+</div>
+</div>
+<div class="tab-content" id="tab4">
+<div class="period-section">
+<div class="section-header">
+<div class="section-header-left">
+<h2>2025年一季报</h2>
+<span class="section-date">8家券商</span>
+</div>
+<div class="section-links">
+<a href="中信建投_2025Q1_财务简报.html" class="report-link-mini">中信建投</a>
+<a href="中信证券_2025Q1_财务简报.html" class="report-link-mini">中信证券</a>
+<a href="中国银河_2025Q1_财务简报.html" class="report-link-mini">中国银河</a>
+<a href="中金公司_2025Q1_财务简报.html" class="report-link-mini">中金公司</a>
+<a href="华泰证券_2025Q1_财务简报.html" class="report-link-mini">华泰证券</a>
+<a href="国泰海通_2025Q1_财务简报.html" class="report-link-mini">国泰海通</a>
+<a href="广发证券_2025Q1_财务简报.html" class="report-link-mini">广发证券</a>
+<a href="招商证券_2025Q1_财务简报.html" class="report-link-mini">招商证券</a>
+</div>
+</div>
+<div class="table-scroll">
+<table class="data-table">
+<thead>
+<tr>
+<th style="min-width:130px">公司</th>
+<th colspan="2">营业总收入</th>
+<th colspan="2">归母净利润</th>
+<th colspan="2">扣非归母净利润</th>
+<th colspan="2">加权平均ROE</th>
+<th colspan="2">基本每股收益</th>
+<th colspan="2">营收净利润率</th>
+</tr>
+<tr>
+<th></th>
+<th class="sub-th">本期</th><th class="sub-th">同比</th>
+<th class="sub-th">本期</th><th class="sub-th">同比</th>
+<th class="sub-th">本期</th><th class="sub-th">同比</th>
+<th class="sub-th">本期</th><th class="sub-th">同比</th>
+<th class="sub-th">本期</th><th class="sub-th">同比</th>
+<th class="sub-th">本期</th><th class="sub-th">同比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<div class="td-company">
+<span class="rank-num">🥇</span>
+<div class="td-company-info">
+<a href="中信证券_2025Q1_财务简报.html" class="company-link">中信证券</a>
+<span class="td-stock-code">600030</span>
+</div>
+</div>
+</td>
+<td class="num">177.61亿</td>
+<td class="chg up">上期 137.55亿 ｜ 同比 +29.13%</td>
+<td class="num">65.45亿</td>
+<td class="chg up">上期 49.59亿 ｜ 同比 +32.00%</td>
+<td class="num">64.37亿</td>
+<td class="chg up">上期 49.05亿 ｜ 同比 +31.23%</td>
+<td class="num">2.37%</td>
+<td class="chg up">上期 1.88% ｜ 同比 +0.49 pct</td>
+<td class="num">0.42 元</td>
+<td class="chg up">上期 0.32 元 ｜ 同比 +0.10 元</td>
+<td class="num">36.2%</td>
+<td class="chg up">上期 35.7% ｜ 同比 +0.6 pct</td>
+</tr>
+<tr>
+<td>
+<div class="td-company">
+<span class="rank-num">🥈</span>
+<div class="td-company-info">
+<a href="国泰海通_2025Q1_财务简报.html" class="company-link">国泰海通</a>
+<span class="td-stock-code">600837</span>
+</div>
+</div>
+</td>
+<td class="num">117.73亿</td>
+<td class="chg up">上期 79.83亿 ｜ 同比 +47.48%</td>
+<td class="num">122.42亿</td>
+<td class="chg up">上期 24.89亿 ｜ 同比 +391.78%</td>
+<td class="num">117.73亿</td>
+<td class="chg up">上期 79.83亿 ｜ 同比 +47.48%</td>
+<td class="num">6.46%</td>
+<td class="chg up">上期 1.55% ｜ 同比 +4.91 pct</td>
+<td class="num">1.16 元</td>
+<td class="chg up">上期 0.26 元 ｜ 同比 +0.90 元</td>
+<td class="num">100.0%</td>
+<td class="chg ">上期 100.0% ｜ 同比 0.0 pct</td>
+</tr>
+<tr>
+<td>
+<div class="td-company">
+<span class="rank-num">🥉</span>
+<div class="td-company-info">
+<a href="华泰证券_2025Q1_财务简报.html" class="company-link">华泰证券</a>
+<span class="td-stock-code">601688</span>
+</div>
+</div>
+</td>
+<td class="num">82.32亿</td>
+<td class="chg up">上期 61.05亿 ｜ 同比 +34.83%</td>
+<td class="num">36.14亿</td>
+<td class="chg up">上期 22.39亿 ｜ 同比 +61.42%</td>
+<td class="num">36.42亿</td>
+<td class="chg up">上期 22.91亿 ｜ 同比 +58.97%</td>
+<td class="num">2.10%</td>
+<td class="chg up">上期 1.37% ｜ 同比 +0.73 pct</td>
+<td class="num">0.38 元</td>
+<td class="chg up">上期 0.24 元 ｜ 同比 +0.14 元</td>
+<td class="num">44.2%</td>
+<td class="chg up">上期 37.5% ｜ 同比 +6.7 pct</td>
+</tr>
+<tr>
+<td>
+<div class="td-company">
+<span class="rank-num">#4</span>
+<div class="td-company-info">
+<a href="中国银河_2025Q1_财务简报.html" class="company-link">中国银河</a>
+<span class="td-stock-code">601881</span>
+</div>
+</div>
+</td>
+<td class="num">75.58亿</td>
+<td class="chg up">上期 72.14亿 ｜ 同比 +4.77%</td>
+<td class="num">30.16亿</td>
+<td class="chg up">上期 16.31亿 ｜ 同比 +84.86%</td>
+<td class="num">30.21亿</td>
+<td class="chg up">上期 16.33亿 ｜ 同比 +85.06%</td>
+<td class="num">2.44%</td>
+<td class="chg up">上期 1.30% ｜ 同比 +1.14 pct</td>
+<td class="num">0.25 元</td>
+<td class="chg up">上期 0.12 元 ｜ 同比 +0.13 元</td>
+<td class="num">40.0%</td>
+<td class="chg up">上期 22.6% ｜ 同比 +17.3 pct</td>
+</tr>
+<tr>
+<td>
+<div class="td-company">
+<span class="rank-num">#5</span>
+<div class="td-company-info">
+<a href="广发证券_2025Q1_财务简报.html" class="company-link">广发证券</a>
+<span class="td-stock-code">000776</span>
+</div>
+</div>
+</td>
+<td class="num">72.40亿</td>
+<td class="chg up">上期 49.49亿 ｜ 同比 +46.29%</td>
+<td class="num">27.32亿</td>
+<td class="chg up">上期 15.28亿 ｜ 同比 +78.87%</td>
+<td class="num">27.57亿</td>
+<td class="chg up">上期 15.38亿 ｜ 同比 +79.23%</td>
+<td class="num">2.06%</td>
+<td class="chg up">上期 1.16% ｜ 同比 +0.90 pct</td>
+<td class="num">0.33 元</td>
+<td class="chg up">上期 0.17 元 ｜ 同比 +0.16 元</td>
+<td class="num">38.1%</td>
+<td class="chg up">上期 31.1% ｜ 同比 +7.0 pct</td>
+</tr>
+<tr>
+<td>
+<div class="td-company">
+<span class="rank-num">#6</span>
+<div class="td-company-info">
+<a href="中金公司_2025Q1_财务简报.html" class="company-link">中金公司</a>
+<span class="td-stock-code">601995</span>
+</div>
+</div>
+</td>
+<td class="num">57.21亿</td>
+<td class="chg up">上期 38.74亿 ｜ 同比 +47.69%</td>
+<td class="num">20.42亿</td>
+<td class="chg up">上期 12.39亿 ｜ 同比 +64.85%</td>
+<td class="num">20.08亿</td>
+<td class="chg up">上期 12.17亿 ｜ 同比 +65.07%</td>
+<td class="num">1.98%</td>
+<td class="chg up">上期 1.21% ｜ 同比 +0.77 pct</td>
+<td class="num">0.38 元</td>
+<td class="chg up">上期 0.22 元 ｜ 同比 +0.16 元</td>
+<td class="num">35.1%</td>
+<td class="chg up">上期 31.4% ｜ 同比 +3.7 pct</td>
+</tr>
+<tr>
+<td>
+<div class="td-company">
+<span class="rank-num">#7</span>
+<div class="td-company-info">
+<a href="中信建投_2025Q1_财务简报.html" class="company-link">中信建投</a>
+<span class="td-stock-code">601066</span>
+</div>
+</div>
+</td>
+<td class="num">49.19亿</td>
+<td class="chg up">上期 42.94亿 ｜ 同比 +14.54%</td>
+<td class="num">18.43亿</td>
+<td class="chg up">上期 12.28亿 ｜ 同比 +50.07%</td>
+<td class="num">18.35亿</td>
+<td class="chg up">上期 12.28亿 ｜ 同比 +49.43%</td>
+<td class="num">2.04%</td>
+<td class="chg up">上期 1.31% ｜ 同比 +0.73 pct</td>
+<td class="num">0.20 元</td>
+<td class="chg up">上期 0.12 元 ｜ 同比 +0.08 元</td>
+<td class="num">37.3%</td>
+<td class="chg up">上期 28.6% ｜ 同比 +8.7 pct</td>
+</tr>
+<tr>
+<td>
+<div class="td-company">
+<span class="rank-num">#8</span>
+<div class="td-company-info">
+<a href="招商证券_2025Q1_财务简报.html" class="company-link">招商证券</a>
+<span class="td-stock-code">600999</span>
+</div>
+</div>
+</td>
+<td class="num">47.13亿</td>
+<td class="chg up">上期 42.99亿 ｜ 同比 +9.64%</td>
+<td class="num">23.08亿</td>
+<td class="chg up">上期 21.57亿 ｜ 同比 +6.97%</td>
+<td class="num">23.07亿</td>
+<td class="chg up">上期 21.59亿 ｜ 同比 +6.86%</td>
+<td class="num">1.87%</td>
+<td class="chg up">上期 1.87% ｜ 同比 +0.00 pct</td>
+<td class="num">0.25 元</td>
+<td class="chg up">上期 0.23 元 ｜ 同比 +0.02 元</td>
+<td class="num">48.9%</td>
+<td class="chg down">上期 50.2% ｜ 同比 -1.3 pct</td>
+</tr>
+</tbody>
+</table>
+</div>
+
+</div>
+</div>
+<div class="tab-content" id="tab5">
+<div class="period-section">
+<div class="section-header">
+<div class="section-header-left">
+<h2>📈 行业分析仪表板</h2>
+<span class="section-date">8家券商多维度对比分析</span>
+</div>
+</div>
+<div class="dashboard-section">
+<a href="8家券商_2026Q1_分析仪表板.html" class="dashboard-link">
+<span class="icon">📊</span>
+<span>2026Q1行业分析仪表板 → 核心KPI矩阵 · 营收结构 · 业务分析 · 金融投资 · 财务效率及风险控制</span>
+</a>
+<div style="margin-top:12px; display:flex; gap:8px; justify-content:center; flex-wrap:wrap;">
+<a href="8家券商_2025Q3_分析仪表板.html" style="display:inline-block; font-size:12px; color:#0f3460; background:#eef2f8; padding:6px 14px; border-radius:12px; text-decoration:none;">2025Q3 仪表板</a>
+</div>
+</div>
+<div class="dashboard-section" style="margin-top:20px">
+<a href="券商营业收入_9公司_5期对比.html" class="dashboard-link" style="background:linear-gradient(135deg,#1a5e2a,#2a8a5a)">
+<span class="icon">📈</span>
+<span>查看券商营业收入对比 → 9家公司5期营收趋势</span>
+</a>
+</div>
+</div>
+</div>
+<div class="footer">
+数据来源：各公司定期报告（合并利润表及资产负债表）｜ 由Peter的行业分析Skill自动生成
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var tabs = document.querySelectorAll('.tab-btn');
+  tabs.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var tabId = this.getAttribute('data-tab');
+      tabs.forEach(function(b) { b.classList.remove('active'); });
+      this.classList.add('active');
+      var contents = document.querySelectorAll('.tab-content');
+      contents.forEach(function(c) { c.classList.remove('active'); });
+      document.getElementById(tabId).classList.add('active');
+    });
+  });
+});
+</script>
+
+</body>
+</html>
