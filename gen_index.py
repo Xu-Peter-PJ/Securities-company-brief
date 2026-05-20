@@ -9,9 +9,6 @@ PERIODS = ['2026Q1', '2025Q3']
 PERIOD_LABEL = {'2026Q1':'2026年一季报', '2025Q3':'2025年三季报'}
 PERIOD_SHORT = {'2026Q1':'26Q1', '2025Q3':'25Q3'}
 
-ORDER_BY_REVENUE_2026Q1 = ['600030','601211','000776','601688','601995','601066','601881','600999']
-ORDER_BY_REVENUE_2025Q3 = ['600030','601211','601688','000776','601881','601995','600999','601066']
-
 CODE_TO_NAME = {
     '000776':'广发证券', '600030':'中信证券', '600999':'招商证券',
     '601066':'中信建投', '601211':'国泰海通', '601688':'华泰证券',
@@ -135,24 +132,27 @@ def extract_dashboard_data(path):
 
 # ── Load data from dashboards ──
 all_data = {}
+all_order = {}
 for p in PERIODS:
     path = os.path.join(DASHBOARD_DIR, f'8家券商_{p}_分析仪表板.html')
     raw = extract_dashboard_data(path)
     compact = {}
-    order = ORDER_BY_REVENUE_2026Q1 if p == '2026Q1' else ORDER_BY_REVENUE_2025Q3
-    for code in order:
+    for code in CODE_TO_NAME:
         if code not in raw: continue
         e = raw[code]
         kpi = e.get('kpi', {})
         compact[code] = {'name': e.get('name', CODE_TO_NAME.get(code,'?')), 'kpi': kpi}
+    # Dynamic ranking by revenue
+    order = sorted(compact.keys(), key=lambda c: compact[c]['kpi'].get('revenue', 0), reverse=True)
     all_data[p] = compact
+    all_order[p] = order
 
 # ── Build JS data blob embedded in page ──
 data_js_lines = ['const DATA = {']
 for pi, p in enumerate(PERIODS):
     comma = ',' if pi < len(PERIODS)-1 else ''
     data_js_lines.append(f'  "{p}": {{')
-    order = ORDER_BY_REVENUE_2026Q1 if p == '2026Q1' else ORDER_BY_REVENUE_2025Q3
+    order = all_order[p]
     for ci, code in enumerate(order):
         if code not in all_data[p]: continue
         entry = all_data[p][code]
@@ -409,7 +409,7 @@ html += '''
 
 for pi, p in enumerate(PERIODS):
     disp = ' active' if pi == 0 else ''
-    order = ORDER_BY_REVENUE_2026Q1 if p == '2026Q1' else ORDER_BY_REVENUE_2025Q3
+    order = all_order[p]
     html += f'<div class="period-content{disp}" id="period-{p}">\n'
     html += build_kpi_table(p, all_data[p], order)
     html += f'''<div class="deep-btn-row">
@@ -433,17 +433,6 @@ html += '''
 <script>
 ''' + data_js_code + f'''
 
-const COMPANY_ORDER = [
-  {{code: "600030", name: "中信证券"}},
-  {{code: "601211", name: "国泰海通"}},
-  {{code: "000776", name: "广发证券"}},
-  {{code: "601688", name: "华泰证券"}},
-  {{code: "601995", name: "中金公司"}},
-  {{code: "601066", name: "中信建投"}},
-  {{code: "601881", name: "中国银河"}},
-  {{code: "600999", name: "招商证券"}}
-];
-
 function fmtYi(val) {{
   return (val / 100000000).toFixed(2) + "亿";
 }}
@@ -461,19 +450,22 @@ function fmtSign(v) {{
 
 function renderCompanyCards(period) {{
   var grid = document.getElementById("company-grid");
+  var codes = Object.keys(DATA[period]).filter(function(c) {{ return c.length === 6 && DATA[period][c].kpi; }});
+  codes.sort(function(a, b) {{ return (DATA[period][b].kpi.revenue||0) - (DATA[period][a].kpi.revenue||0); }});
   var html = "";
-  for (var i = 0; i < COMPANY_ORDER.length; i++) {{
-    var c = COMPANY_ORDER[i];
-    var d = DATA[period][c.code];
+  for (var i = 0; i < codes.length; i++) {{
+    var code = codes[i];
+    var d = DATA[period][code];
     if (!d) continue;
     var k = d.kpi;
+    var name = d.name;
     var revYoYClass = fmtSign(k.revenue_yoy);
-    var briefBase = "简报/" + c.name + "/" + c.name;
+    var briefBase = "简报/" + name + "/" + name;
     var briefPath = briefBase + "_" + period + "_财务简报_无分析.html";
 
     html += '<div class="company-card">';
     html += '<div class="company-card-header">';
-    html += '<div><span class="card-name">' + c.name + '</span> <span class="card-code">' + c.code + '</span></div>';
+    html += '<div><span class="card-name">' + name + '</span> <span class="card-code">' + code + '</span></div>';
     html += '</div>';
     html += '<div class="company-card-body">';
     html += '<div class="card-metric"><span class="card-label">营业总收入</span><span class="card-value">' + fmtYi(k.revenue) + '</span></div>';
