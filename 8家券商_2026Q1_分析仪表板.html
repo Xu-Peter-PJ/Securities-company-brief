@@ -1179,7 +1179,7 @@ function switchTab(i) {
 document.getElementById('tabNav').addEventListener('click', function(e) {
     const btn = e.target.closest('.tab-btn');
     if (!btn) return;
-    const btns = Array.from(this.children);
+    const btns = Array.from(this.querySelectorAll('.tab-btn'));
     const idx = btns.indexOf(btn);
     if (idx < 0) return;
     document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
