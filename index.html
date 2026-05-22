@@ -181,13 +181,14 @@ body {
 
 <div class="toolbar">
 <span class="toolbar-label">报告期间：</span>
-<button class="period-btn active" onclick="switchPeriod('2026Q1')">2026年一季报</button>
+<button class="period-btn active" onclick="switchPeriod('2025FY')">2025年年报</button>
 <button class="period-btn" onclick="switchPeriod('2025Q3')">2025年三季报</button>
+<button class="period-btn" onclick="switchPeriod('2026Q1')">2026年一季报</button>
 
 </div>
 
 <div class="container">
-<div class="period-content active" id="period-2026Q1">
+<div class="period-content active" id="period-2025FY">
 <div class="section-title">核心KPI排名 <span class="badge">按营收降序</span></div>
 <div class="table-scroll"><table class="data-table"><thead><tr>
 <th>#</th><th>公司</th>
@@ -201,87 +202,87 @@ body {
 <th>EPS(元)</th>
 </tr></thead><tbody>
 <tr><td>🥇</td><td>中信证券</td>
-<td class="num">231.55</td>
-<td class="num up">+40.91%</td>
-<td class="num">102.16</td>
-<td class="num up">+54.60%</td>
-<td class="num">102.03</td>
-<td class="num">3.46</td>
-<td class="num">44.06</td>
-<td class="num">0.6700</td>
+<td class="num">748.54</td>
+<td class="num up">+28.79%</td>
+<td class="na">-</td>
+<td class="na">-</td>
+<td class="num">0.00</td>
+<td class="num">10.59</td>
+<td class="num">0.00</td>
+<td class="num">1.9600</td>
 </tr>
 <tr><td>🥈</td><td>国泰海通</td>
-<td class="num">162.32</td>
-<td class="num up">+58.91%</td>
-<td class="num">63.88</td>
-<td class="num down">-47.82%</td>
-<td class="num">57.11</td>
-<td class="num">1.95</td>
-<td class="num">35.18</td>
-<td class="num">0.3600</td>
+<td class="num">631.07</td>
+<td class="num up">+87.40%</td>
+<td class="num">278.09</td>
+<td class="num up">+113.52%</td>
+<td class="num">0.00</td>
+<td class="num">9.78</td>
+<td class="num">0.00</td>
+<td class="num">1.7400</td>
 </tr>
 <tr><td>🥉</td><td>广发证券</td>
-<td class="num">116.82</td>
-<td class="num up">+64.33%</td>
-<td class="num">47.07</td>
-<td class="num up">+70.73%</td>
-<td class="num">47.11</td>
-<td class="num">3.32</td>
-<td class="num">40.32</td>
-<td class="num">0.5800</td>
+<td class="num">354.93</td>
+<td class="num up">+30.49%</td>
+<td class="num">137.02</td>
+<td class="num up">+42.18%</td>
+<td class="num">142.57</td>
+<td class="num">10.16</td>
+<td class="num">40.17</td>
+<td class="num">1.6800</td>
 </tr>
-<tr><td><span class="rank-num">#4</span></td><td>华泰证券</td>
-<td class="num">104.22</td>
-<td class="num up">+41.48%</td>
-<td class="num">48.00</td>
-<td class="num up">+31.79%</td>
-<td class="num">48.02</td>
-<td class="num">2.61</td>
-<td class="num">46.08</td>
-<td class="num">0.5100</td>
+<tr><td><span class="rank-num">#4</span></td><td>中国银河</td>
+<td class="num">283.02</td>
+<td class="num up">+24.34%</td>
+<td class="num">125.20</td>
+<td class="num up">+24.81%</td>
+<td class="num">125.22</td>
+<td class="num">8.30</td>
+<td class="num">44.24</td>
+<td class="num">0.8100</td>
 </tr>
-<tr><td><span class="rank-num">#5</span></td><td>中金公司</td>
-<td class="num">88.25</td>
-<td class="num up">+54.26%</td>
-<td class="num">35.77</td>
-<td class="num up">+75.19%</td>
-<td class="num">35.38</td>
-<td class="num">3.35</td>
-<td class="num">40.09</td>
-<td class="num">0.7000</td>
+<tr><td><span class="rank-num">#5</span></td><td>招商证券</td>
+<td class="num">249.72</td>
+<td class="num up">+19.53%</td>
+<td class="num">123.50</td>
+<td class="num up">+18.91%</td>
+<td class="num">122.99</td>
+<td class="num">9.94</td>
+<td class="num">49.25</td>
+<td class="num">1.3500</td>
 </tr>
 <tr><td><span class="rank-num">#6</span></td><td>中信建投</td>
-<td class="num">76.96</td>
-<td class="num up">+62.26%</td>
-<td class="num">36.67</td>
-<td class="num up">+99.03%</td>
-<td class="num">36.23</td>
-<td class="num">4.02</td>
-<td class="num">47.08</td>
-<td class="num">0.4400</td>
+<td class="na">-</td>
+<td class="na">-</td>
+<td class="na">-</td>
+<td class="na">-</td>
+<td class="na">-</td>
+<td class="num">10.51</td>
+<td class="na">-</td>
+<td class="num">1.0900</td>
 </tr>
-<tr><td><span class="rank-num">#7</span></td><td>中国银河</td>
-<td class="num">73.55</td>
-<td class="num up">+15.66%</td>
-<td class="num">33.20</td>
-<td class="num up">+10.09%</td>
-<td class="num">33.20</td>
-<td class="num">2.53</td>
-<td class="num">45.15</td>
-<td class="num">0.2800</td>
+<tr><td><span class="rank-num">#7</span></td><td>华泰证券</td>
+<td class="na">-</td>
+<td class="na">-</td>
+<td class="na">-</td>
+<td class="na">-</td>
+<td class="na">-</td>
+<td class="na">-</td>
+<td class="na">-</td>
+<td class="na">-</td>
 </tr>
-<tr><td><span class="rank-num">#8</span></td><td>招商证券</td>
-<td class="num">69.73</td>
-<td class="num up">+47.96%</td>
-<td class="num">32.71</td>
-<td class="num up">+41.73%</td>
-<td class="num">32.69</td>
-<td class="num">2.54</td>
-<td class="num">46.88</td>
-<td class="num">0.3600</td>
+<tr><td><span class="rank-num">#8</span></td><td>中金公司</td>
+<td class="na">-</td>
+<td class="na">-</td>
+<td class="na">-</td>
+<td class="na">-</td>
+<td class="na">-</td>
+<td class="na">-</td>
+<td class="na">-</td>
+<td class="na">-</td>
 </tr>
 </tbody></table></div><div class="deep-btn-row">
-<a href="8家券商_2026Q1_分析仪表板.html" class="deep-btn">详细行业分析</a>
+<a href="8家券商_2025FY_分析仪表板.html" class="deep-btn">详细行业分析</a>
 </div>
 </div>
 <div class="period-content" id="period-2025Q3">
@@ -381,6 +382,103 @@ body {
 <a href="8家券商_2025Q3_分析仪表板.html" class="deep-btn">详细行业分析</a>
 </div>
 </div>
+<div class="period-content" id="period-2026Q1">
+<div class="section-title">核心KPI排名 <span class="badge">按营收降序</span></div>
+<div class="table-scroll"><table class="data-table"><thead><tr>
+<th>#</th><th>公司</th>
+<th>营业总收入</th>
+<th>营收同比</th>
+<th>归母净利润</th>
+<th>净利同比</th>
+<th>扣非净利润</th>
+<th>ROE</th>
+<th>净利率</th>
+<th>EPS(元)</th>
+</tr></thead><tbody>
+<tr><td>🥇</td><td>中信证券</td>
+<td class="num">231.55</td>
+<td class="num up">+40.91%</td>
+<td class="num">102.16</td>
+<td class="num up">+54.60%</td>
+<td class="num">102.03</td>
+<td class="num">3.46</td>
+<td class="num">44.06</td>
+<td class="num">0.6700</td>
+</tr>
+<tr><td>🥈</td><td>国泰海通</td>
+<td class="num">162.32</td>
+<td class="num up">+58.91%</td>
+<td class="num">63.88</td>
+<td class="num down">-47.82%</td>
+<td class="num">57.11</td>
+<td class="num">1.95</td>
+<td class="num">35.18</td>
+<td class="num">0.3600</td>
+</tr>
+<tr><td>🥉</td><td>广发证券</td>
+<td class="num">116.82</td>
+<td class="num up">+64.33%</td>
+<td class="num">47.07</td>
+<td class="num up">+70.73%</td>
+<td class="num">47.11</td>
+<td class="num">3.32</td>
+<td class="num">40.32</td>
+<td class="num">0.5800</td>
+</tr>
+<tr><td><span class="rank-num">#4</span></td><td>华泰证券</td>
+<td class="num">104.22</td>
+<td class="num up">+41.48%</td>
+<td class="num">48.00</td>
+<td class="num up">+31.79%</td>
+<td class="num">48.02</td>
+<td class="num">2.61</td>
+<td class="num">46.08</td>
+<td class="num">0.5100</td>
+</tr>
+<tr><td><span class="rank-num">#5</span></td><td>中金公司</td>
+<td class="num">88.25</td>
+<td class="num up">+54.26%</td>
+<td class="num">35.77</td>
+<td class="num up">+75.19%</td>
+<td class="num">35.38</td>
+<td class="num">3.35</td>
+<td class="num">40.09</td>
+<td class="num">0.7000</td>
+</tr>
+<tr><td><span class="rank-num">#6</span></td><td>中信建投</td>
+<td class="num">76.96</td>
+<td class="num up">+62.26%</td>
+<td class="num">36.67</td>
+<td class="num up">+99.03%</td>
+<td class="num">36.23</td>
+<td class="num">4.02</td>
+<td class="num">47.08</td>
+<td class="num">0.4400</td>
+</tr>
+<tr><td><span class="rank-num">#7</span></td><td>中国银河</td>
+<td class="num">73.55</td>
+<td class="num up">+15.66%</td>
+<td class="num">33.20</td>
+<td class="num up">+10.09%</td>
+<td class="num">33.20</td>
+<td class="num">2.53</td>
+<td class="num">45.15</td>
+<td class="num">0.2800</td>
+</tr>
+<tr><td><span class="rank-num">#8</span></td><td>招商证券</td>
+<td class="num">69.73</td>
+<td class="num up">+47.96%</td>
+<td class="num">32.71</td>
+<td class="num up">+41.73%</td>
+<td class="num">32.69</td>
+<td class="num">2.54</td>
+<td class="num">46.88</td>
+<td class="num">0.3600</td>
+</tr>
+</tbody></table></div><div class="deep-btn-row">
+<a href="8家券商_2026Q1_分析仪表板.html" class="deep-btn">详细行业分析</a>
+</div>
+</div>
 
 <!-- Dynamic Company Brief Section -->
 <div class="section-title">公司简报 <span class="badge">点击查看详细财务简报</span></div>
@@ -395,15 +493,15 @@ body {
 
 <script>
 const DATA = {
-  "2026Q1": {
-    "600030": {"name":"中信证券","kpi":{"revenue":23155089056.75,"revenue_prev":16432092877.04,"revenue_yoy":40.91,"np":10216128310.91,"np_prev":6608025797.06,"np_yoy":54.6,"deducted_np":10202684596.22,"deducted_np_prev":6499930393.51,"deducted_np_yoy":56.97,"eps":0.67,"eps_yoy":55.81,"roe":3.46,"roe_prev":2.39,"roe_yoy":1.07,"total_assets":2244674433596.29,"net_assets":334571051206.39,"total_assets_yoy":7.82,"net_assets_yoy":4.58,"np_margin":44.06,"np_margin_prev":39.56,"np_margin_chg":4.51,"cost_ratio":40.29,"cost_ratio_prev":46.48,"cost_ratio_chg":-6.2}},
-    "601211": {"name":"国泰海通","kpi":{"revenue":16232110965.0,"revenue_prev":10214854390.0,"revenue_yoy":58.91,"np":6388465090.0,"np_prev":12242053407.0,"np_yoy":-47.82,"deducted_np":5710848828.0,"deducted_np_prev":3292931299.0,"deducted_np_yoy":73.43,"eps":0.36,"eps_yoy":-68.97,"roe":1.95,"roe_prev":6.46,"roe_yoy":-4.51,"total_assets":2259716257095.0,"net_assets":336424636912.0,"total_assets_yoy":6.88,"net_assets_yoy":1.82,"np_margin":35.18,"np_margin_prev":32.24,"np_margin_chg":2.95,"cost_ratio":43.84,"cost_ratio_prev":48.16,"cost_ratio_chg":-4.31}},
-    "000776": {"name":"广发证券","kpi":{"revenue":11681980573.19,"revenue_prev":7108648293.56,"revenue_yoy":64.33,"np":4707447205.41,"np_prev":2757201312.78,"np_yoy":70.73,"deducted_np":4710524626.33,"deducted_np_prev":2732379578.23,"deducted_np_yoy":72.4,"eps":0.58,"eps_yoy":75.76,"roe":3.32,"roe_prev":2.06,"roe_yoy":1.26,"total_assets":1122227199219.8,"net_assets":171484871766.4,"total_assets_yoy":15.04,"net_assets_yoy":9.85,"np_margin":40.32,"np_margin_prev":38.44,"np_margin_chg":1.89,"cost_ratio":45.93,"cost_ratio_prev":49.68,"cost_ratio_chg":-3.75}},
-    "601688": {"name":"华泰证券","kpi":{"revenue":10421730928.21,"revenue_prev":7366162435.73,"revenue_yoy":41.48,"np":4800496779.97,"np_prev":3642409445.26,"np_yoy":31.79,"deducted_np":4801848057.26,"deducted_np_prev":3614349407.98,"deducted_np_yoy":32.86,"eps":0.51,"eps_yoy":34.21,"roe":2.61,"roe_prev":2.1,"roe_yoy":0.51,"total_assets":1225406190632.98,"net_assets":211406735831.18,"total_assets_yoy":13.74,"net_assets_yoy":2.16,"np_margin":46.08,"np_margin_prev":49.07,"np_margin_chg":-2.99,"cost_ratio":41.41,"cost_ratio_prev":42.62,"cost_ratio_chg":-1.21}},
-    "601995": {"name":"中金公司","kpi":{"revenue":8825240263.0,"revenue_prev":5720965040.0,"revenue_yoy":54.26,"np":3577445645.0,"np_prev":2041982798.0,"np_yoy":75.19,"deducted_np":3537751927.0,"deducted_np_prev":2008455771.0,"deducted_np_yoy":76.14,"eps":0.7,"eps_yoy":84.17,"roe":3.35,"roe_prev":1.98,"roe_yoy":1.37,"total_assets":869766086503.0,"net_assets":132468461654.0,"total_assets_yoy":11.11,"net_assets_yoy":8.53,"np_margin":40.09,"np_margin_prev":35.11,"np_margin_chg":4.98,"cost_ratio":48.39,"cost_ratio_prev":57.35,"cost_ratio_chg":-8.96}},
-    "601066": {"name":"中信建投","kpi":{"revenue":7695568554.1,"revenue_prev":4742593553.05,"revenue_yoy":62.26,"np":3667406478.67,"np_prev":1842645806.07,"np_yoy":99.03,"deducted_np":3623252987.92,"deducted_np_prev":1835131432.57,"deducted_np_yoy":97.44,"eps":0.44,"eps_yoy":120.0,"roe":4.02,"roe_prev":2.04,"roe_yoy":1.98,"total_assets":779613662104.08,"net_assets":126823050480.3,"total_assets_yoy":15.19,"net_assets_yoy":6.48,"np_margin":47.08,"np_margin_prev":38.69,"np_margin_chg":8.39,"cost_ratio":39.56,"cost_ratio_prev":51.25,"cost_ratio_chg":-11.69}},
-    "601881": {"name":"中国银河","kpi":{"revenue":7354563884.74,"revenue_prev":6358658422.36,"revenue_yoy":15.66,"np":3320207445.86,"np_prev":3015845560.34,"np_yoy":10.09,"deducted_np":3320424189.97,"deducted_np_prev":3021125942.69,"deducted_np_yoy":9.91,"eps":0.28,"eps_yoy":12.0,"roe":2.53,"roe_prev":2.44,"roe_yoy":0.09,"total_assets":980898748578.83,"net_assets":156114709264.66,"total_assets_yoy":14.63,"net_assets_yoy":5.64,"np_margin":45.15,"np_margin_prev":47.51,"np_margin_chg":-2.36,"cost_ratio":43.62,"cost_ratio_prev":44.3,"cost_ratio_chg":-0.68}},
-    "600999": {"name":"招商证券","kpi":{"revenue":6973207418.79,"revenue_prev":4712949021.97,"revenue_yoy":47.96,"np":3270564508.47,"np_prev":2307627966.26,"np_yoy":41.73,"deducted_np":3268808625.57,"deducted_np_prev":2306916491.79,"deducted_np_yoy":41.7,"eps":0.36,"eps_yoy":44.0,"roe":2.54,"roe_prev":1.87,"roe_yoy":0.67,"total_assets":788352765920.81,"net_assets":141318991686.04,"total_assets_yoy":4.63,"net_assets_yoy":0.0,"np_margin":46.88,"np_margin_prev":48.95,"np_margin_chg":-2.07,"cost_ratio":43.53,"cost_ratio_prev":46.38,"cost_ratio_chg":-2.85}}
+  "2025FY": {
+    "600030": {"name":"中信证券","kpi":{"revenue":74854368352.85,"revenue_prev":58119003450.22,"revenue_yoy":28.79,"np":"None","np_prev":"None","np_yoy":"None","deducted_np":1.97,"deducted_np_prev":1.4,"deducted_np_yoy":40.71,"eps":1.96,"eps_yoy":39.01,"roe":10.59,"roe_prev":8.09,"roe_yoy":2.5,"total_assets":2081902593243.18,"net_assets":"None","total_assets_yoy":"None","net_assets_yoy":"None","np_margin":0.0,"np_margin_prev":0.0,"np_margin_chg":0.0,"cost_ratio":"None","cost_ratio_prev":"None","cost_ratio_chg":"None"}},
+    "601211": {"name":"国泰海通","kpi":{"revenue":63107440954.0,"revenue_prev":33675485600.0,"revenue_yoy":87.4,"np":27809205680.0,"np_prev":13024084673.0,"np_yoy":113.52,"deducted_np":1.74,"deducted_np_prev":1.39,"deducted_np_yoy":25.18,"eps":1.74,"eps_yoy":25.18,"roe":9.78,"roe_prev":8.14,"roe_yoy":1.64,"total_assets":2114338135017.0,"net_assets":330416848728.0,"total_assets_yoy":"None","net_assets_yoy":"None","np_margin":0.0,"np_margin_prev":0.0,"np_margin_chg":-0.0,"cost_ratio":"None","cost_ratio_prev":"None","cost_ratio_chg":"None"}},
+    "000776": {"name":"广发证券","kpi":{"revenue":35492783045.2,"revenue_prev":27198789118.97,"revenue_yoy":30.49,"np":13701548267.44,"np_prev":9636829949.09,"np_yoy":42.18,"deducted_np":14256968585.2,"deducted_np_prev":8914536987.76,"deducted_np_yoy":59.93,"eps":1.68,"eps_yoy":46.09,"roe":10.16,"roe_prev":7.44,"roe_yoy":2.72,"total_assets":975484253922.13,"net_assets":"None","total_assets_yoy":"None","net_assets_yoy":"None","np_margin":40.17,"np_margin_prev":32.78,"np_margin_chg":7.39,"cost_ratio":"None","cost_ratio_prev":"None","cost_ratio_chg":"None"}},
+    "601881": {"name":"中国银河","kpi":{"revenue":28302251724.47,"revenue_prev":22761598103.0,"revenue_yoy":24.34,"np":12519718792.04,"np_prev":10030837664.86,"np_yoy":24.81,"deducted_np":12521689329.66,"deducted_np_prev":"None","deducted_np_yoy":"None","eps":0.81,"eps_yoy":0.0,"roe":8.3,"roe_prev":"None","roe_yoy":"None","total_assets":"None","net_assets":"None","total_assets_yoy":"None","net_assets_yoy":"None","np_margin":44.24,"np_margin_prev":"None","np_margin_chg":"None","cost_ratio":"None","cost_ratio_prev":"None","cost_ratio_chg":"None"}},
+    "600999": {"name":"招商证券","kpi":{"revenue":24971732131.98,"revenue_prev":20891398043.11,"revenue_yoy":19.53,"np":12349522678.95,"np_prev":10385872410.71,"np_yoy":18.91,"deducted_np":12298556809.31,"deducted_np_prev":10376772696.25,"deducted_np_yoy":18.52,"eps":1.35,"eps_yoy":19.47,"roe":9.94,"roe_prev":8.82,"roe_yoy":1.12,"total_assets":753477089745.4,"net_assets":"None","total_assets_yoy":4.48,"net_assets_yoy":"None","np_margin":49.25,"np_margin_prev":49.67,"np_margin_chg":-0.42,"cost_ratio":"None","cost_ratio_prev":"None","cost_ratio_chg":"None"}},
+    "601066": {"name":"中信建投","kpi":{"revenue":"None","revenue_prev":"None","revenue_yoy":"None","np":"None","np_prev":"None","np_yoy":"None","deducted_np":"None","deducted_np_prev":"None","deducted_np_yoy":"None","eps":1.09,"eps_yoy":37.97,"roe":10.51,"roe_prev":8.22,"roe_yoy":2.29,"total_assets":"None","net_assets":"None","total_assets_yoy":"None","net_assets_yoy":"None","np_margin":"None","np_margin_prev":"None","np_margin_chg":"None","cost_ratio":"None","cost_ratio_prev":"None","cost_ratio_chg":"None"}},
+    "601688": {"name":"华泰证券","kpi":{"revenue":"None","revenue_prev":"None","revenue_yoy":"None","np":"None","np_prev":"None","np_yoy":"None","deducted_np":"None","deducted_np_prev":"None","deducted_np_yoy":"None","eps":"None","eps_yoy":"None","roe":"None","roe_prev":"None","roe_yoy":"None","total_assets":"None","net_assets":"None","total_assets_yoy":"None","net_assets_yoy":"None","np_margin":"None","np_margin_prev":"None","np_margin_chg":"None","cost_ratio":"None","cost_ratio_prev":"None","cost_ratio_chg":"None"}},
+    "601995": {"name":"中金公司","kpi":{"revenue":"None","revenue_prev":"None","revenue_yoy":"None","np":"None","np_prev":"None","np_yoy":"None","deducted_np":"None","deducted_np_prev":"None","deducted_np_yoy":"None","eps":"None","eps_yoy":"None","roe":"None","roe_prev":"None","roe_yoy":"None","total_assets":"None","net_assets":"None","total_assets_yoy":"None","net_assets_yoy":"None","np_margin":"None","np_margin_prev":"None","np_margin_chg":"None","cost_ratio":"None","cost_ratio_prev":"None","cost_ratio_chg":"None"}}
   },
   "2025Q3": {
     "600030": {"name":"中信证券","kpi":{"revenue":55814696246.7,"revenue_prev":14626820666.89,"revenue_yoy":55.71,"np":23158914572.54,"np_prev":6229099787.73,"np_yoy":51.54,"deducted_np":23000488312.03,"deducted_np_prev":6211383745.97,"deducted_np_yoy":51.81,"eps":1.51,"eps_yoy":55.0,"roe":8.15,"roe_prev":2.34,"roe_yoy":5.81,"total_assets":2026309578991.81,"net_assets":315024726980.37,"total_assets_yoy":18.45,"net_assets_yoy":7.48,"np_margin":41.21,"np_margin_prev":42.47,"np_margin_chg":-1.26,"cost_ratio":43.62,"cost_ratio_prev":137.68,"cost_ratio_chg":-94.06}},
@@ -414,6 +512,16 @@ const DATA = {
     "601995": {"name":"中金公司","kpi":{"revenue":20760603329.0,"revenue_prev":13449470930.94,"revenue_yoy":54.36,"np":6566693338.0,"np_prev":2858190789.12,"np_yoy":129.75,"deducted_np":6485755612.0,"deducted_np_prev":2838902045.0,"deducted_np_yoy":128.46,"eps":1.24,"eps_yoy":154.82,"roe":6.29,"roe_prev":2.64,"roe_yoy":3.65,"total_assets":764940856885.0,"net_assets":115500705132.0,"total_assets_yoy":13.37,"net_assets_yoy":0.13,"np_margin":31.24,"np_margin_prev":21.11,"np_margin_chg":10.13,"cost_ratio":61.92,"cost_ratio_prev":76.29,"cost_ratio_chg":-14.37}},
     "600999": {"name":"招商证券","kpi":{"revenue":18243581542.77,"revenue_prev":14279572278.31,"revenue_yoy":27.76,"np":8871429271.43,"np_prev":7149765692.64,"np_yoy":24.08,"deducted_np":8861769410.07,"deducted_np_prev":7145435744.29,"deducted_np_yoy":24.02,"eps":0.97,"eps_yoy":25.97,"roe":7.18,"roe_prev":6.12,"roe_yoy":1.06,"total_assets":745632156428.66,"net_assets":134636231051.01,"total_assets_yoy":3.39,"net_assets_yoy":3.42,"np_margin":48.57,"np_margin_prev":50.04,"np_margin_chg":-1.46,"cost_ratio":44.86,"cost_ratio_prev":47.3,"cost_ratio_chg":-2.45}},
     "601066": {"name":"中信建投","kpi":{"revenue":17289286297.97,"revenue_prev":4217653936.55,"revenue_yoy":55.29,"np":7088639471.04,"np_prev":1439674338.62,"np_yoy":79.21,"deducted_np":7046700193.83,"deducted_np_prev":1432088718.99,"deducted_np_yoy":79.83,"eps":0.82,"eps_yoy":100.0,"roe":7.99,"roe_prev":1.59,"roe_yoy":6.4,"total_assets":662757008402.98,"net_assets":115779303748.28,"total_assets_yoy":17.01,"net_assets_yoy":8.74,"np_margin":40.76,"np_margin_prev":33.95,"np_margin_chg":6.8,"cost_ratio":46.59,"cost_ratio_prev":182.89,"cost_ratio_chg":-136.3}}
+  },
+  "2026Q1": {
+    "600030": {"name":"中信证券","kpi":{"revenue":23155089056.75,"revenue_prev":16432092877.04,"revenue_yoy":40.91,"np":10216128310.91,"np_prev":6608025797.06,"np_yoy":54.6,"deducted_np":10202684596.22,"deducted_np_prev":6499930393.51,"deducted_np_yoy":56.97,"eps":0.67,"eps_yoy":55.81,"roe":3.46,"roe_prev":2.39,"roe_yoy":1.07,"total_assets":2244674433596.29,"net_assets":334571051206.39,"total_assets_yoy":7.82,"net_assets_yoy":4.58,"np_margin":44.06,"np_margin_prev":39.56,"np_margin_chg":4.51,"cost_ratio":40.29,"cost_ratio_prev":46.48,"cost_ratio_chg":-6.2}},
+    "601211": {"name":"国泰海通","kpi":{"revenue":16232110965.0,"revenue_prev":10214854390.0,"revenue_yoy":58.91,"np":6388465090.0,"np_prev":12242053407.0,"np_yoy":-47.82,"deducted_np":5710848828.0,"deducted_np_prev":3292931299.0,"deducted_np_yoy":73.43,"eps":0.36,"eps_yoy":-68.97,"roe":1.95,"roe_prev":6.46,"roe_yoy":-4.51,"total_assets":2259716257095.0,"net_assets":336424636912.0,"total_assets_yoy":6.88,"net_assets_yoy":1.82,"np_margin":35.18,"np_margin_prev":32.24,"np_margin_chg":2.95,"cost_ratio":43.84,"cost_ratio_prev":48.16,"cost_ratio_chg":-4.31}},
+    "000776": {"name":"广发证券","kpi":{"revenue":11681980573.19,"revenue_prev":7108648293.56,"revenue_yoy":64.33,"np":4707447205.41,"np_prev":2757201312.78,"np_yoy":70.73,"deducted_np":4710524626.33,"deducted_np_prev":2732379578.23,"deducted_np_yoy":72.4,"eps":0.58,"eps_yoy":75.76,"roe":3.32,"roe_prev":2.06,"roe_yoy":1.26,"total_assets":1122227199219.8,"net_assets":171484871766.4,"total_assets_yoy":15.04,"net_assets_yoy":9.85,"np_margin":40.32,"np_margin_prev":38.44,"np_margin_chg":1.89,"cost_ratio":45.93,"cost_ratio_prev":49.68,"cost_ratio_chg":-3.75}},
+    "601688": {"name":"华泰证券","kpi":{"revenue":10421730928.21,"revenue_prev":7366162435.73,"revenue_yoy":41.48,"np":4800496779.97,"np_prev":3642409445.26,"np_yoy":31.79,"deducted_np":4801848057.26,"deducted_np_prev":3614349407.98,"deducted_np_yoy":32.86,"eps":0.51,"eps_yoy":34.21,"roe":2.61,"roe_prev":2.1,"roe_yoy":0.51,"total_assets":1225406190632.98,"net_assets":211406735831.18,"total_assets_yoy":13.74,"net_assets_yoy":2.16,"np_margin":46.08,"np_margin_prev":49.07,"np_margin_chg":-2.99,"cost_ratio":41.41,"cost_ratio_prev":42.62,"cost_ratio_chg":-1.21}},
+    "601995": {"name":"中金公司","kpi":{"revenue":8825240263.0,"revenue_prev":5720965040.0,"revenue_yoy":54.26,"np":3577445645.0,"np_prev":2041982798.0,"np_yoy":75.19,"deducted_np":3537751927.0,"deducted_np_prev":2008455771.0,"deducted_np_yoy":76.14,"eps":0.7,"eps_yoy":84.17,"roe":3.35,"roe_prev":1.98,"roe_yoy":1.37,"total_assets":869766086503.0,"net_assets":132468461654.0,"total_assets_yoy":11.11,"net_assets_yoy":8.53,"np_margin":40.09,"np_margin_prev":35.11,"np_margin_chg":4.98,"cost_ratio":48.39,"cost_ratio_prev":57.35,"cost_ratio_chg":-8.96}},
+    "601066": {"name":"中信建投","kpi":{"revenue":7695568554.1,"revenue_prev":4742593553.05,"revenue_yoy":62.26,"np":3667406478.67,"np_prev":1842645806.07,"np_yoy":99.03,"deducted_np":3623252987.92,"deducted_np_prev":1835131432.57,"deducted_np_yoy":97.44,"eps":0.44,"eps_yoy":120.0,"roe":4.02,"roe_prev":2.04,"roe_yoy":1.98,"total_assets":779613662104.08,"net_assets":126823050480.3,"total_assets_yoy":15.19,"net_assets_yoy":6.48,"np_margin":47.08,"np_margin_prev":38.69,"np_margin_chg":8.39,"cost_ratio":39.56,"cost_ratio_prev":51.25,"cost_ratio_chg":-11.69}},
+    "601881": {"name":"中国银河","kpi":{"revenue":7354563884.74,"revenue_prev":6358658422.36,"revenue_yoy":15.66,"np":3320207445.86,"np_prev":3015845560.34,"np_yoy":10.09,"deducted_np":3320424189.97,"deducted_np_prev":3021125942.69,"deducted_np_yoy":9.91,"eps":0.28,"eps_yoy":12.0,"roe":2.53,"roe_prev":2.44,"roe_yoy":0.09,"total_assets":980898748578.83,"net_assets":156114709264.66,"total_assets_yoy":14.63,"net_assets_yoy":5.64,"np_margin":45.15,"np_margin_prev":47.51,"np_margin_chg":-2.36,"cost_ratio":43.62,"cost_ratio_prev":44.3,"cost_ratio_chg":-0.68}},
+    "600999": {"name":"招商证券","kpi":{"revenue":6973207418.79,"revenue_prev":4712949021.97,"revenue_yoy":47.96,"np":3270564508.47,"np_prev":2307627966.26,"np_yoy":41.73,"deducted_np":3268808625.57,"deducted_np_prev":2306916491.79,"deducted_np_yoy":41.7,"eps":0.36,"eps_yoy":44.0,"roe":2.54,"roe_prev":1.87,"roe_yoy":0.67,"total_assets":788352765920.81,"net_assets":141318991686.04,"total_assets_yoy":4.63,"net_assets_yoy":0.0,"np_margin":46.88,"np_margin_prev":48.95,"np_margin_chg":-2.07,"cost_ratio":43.53,"cost_ratio_prev":46.38,"cost_ratio_chg":-2.85}}
   }
 };
 
@@ -482,7 +590,7 @@ function switchPeriod(period) {
   renderCompanyCards(period);
 }
 
-renderCompanyCards("2026Q1");
+renderCompanyCards("' + PERIODS[0] + '");
 </script>
 
 </body>

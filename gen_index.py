@@ -4,10 +4,49 @@
 
 import os, re, json, shutil
 
-# ── Config ──
-PERIODS = ['2026Q1', '2025Q3']
-PERIOD_LABEL = {'2026Q1':'2026年一季报', '2025Q3':'2025年三季报'}
-PERIOD_SHORT = {'2026Q1':'26Q1', '2025Q3':'25Q3'}
+# ── Config (auto-detect periods from dashboard files) ──
+DASHBOARD_DIR = '/Users/peter/Desktop/券商分析数据/行业分析'
+GIT_DIR = '/Users/peter/Desktop/git'
+DATA_DIR = '/Users/peter/Desktop/券商分析数据'
+OUT_PATH = os.path.join(GIT_DIR, 'index.html')
+
+def detect_periods():
+    """从仪表板文件自动检测可用期间列表"""
+    periods = []
+    labels = {}
+    shorts = {}
+    if not os.path.exists(DASHBOARD_DIR):
+        return ['2026Q1'], {'2026Q1':'2026年一季报'}, {'2026Q1':'26Q1'}
+    for f in sorted(os.listdir(DASHBOARD_DIR)):
+        m = re.match(r'8家券商_(\d{4}(?:Q[1-4]|FY|H[12]))_分析仪表板\.html$', f)
+        if m:
+            p = m.group(1)
+            periods.append(p)
+            # 生成label：2026Q1 → 2026年一季报, 2025FY → 2025年年报, 2025H1 → 2025年半年报
+            if p.endswith('Q1'):
+                labels[p] = f'{p[:4]}年一季报'
+            elif p.endswith('Q2'):
+                labels[p] = f'{p[:4]}年半年报'
+            elif p.endswith('Q3'):
+                labels[p] = f'{p[:4]}年三季报'
+            elif p.endswith('Q4'):
+                labels[p] = f'{p[:4]}年年报'
+            elif p.endswith('FY'):
+                labels[p] = f'{p[:4]}年年报'
+            elif p.endswith('H1'):
+                labels[p] = f'{p[:4]}年半年报'
+            elif p.endswith('H2'):
+                labels[p] = f'{p[:4]}年年报'
+            else:
+                labels[p] = p
+            shorts[p] = p[-4:] if len(p) > 4 else p
+    if not periods:
+        periods = ['2026Q1']
+        labels['2026Q1'] = '2026年一季报'
+        shorts['2026Q1'] = '26Q1'
+    return periods, labels, shorts
+
+PERIODS, PERIOD_LABEL, PERIOD_SHORT = detect_periods()
 
 CODE_TO_NAME = {
     '000776':'广发证券', '600030':'中信证券', '600999':'招商证券',
@@ -21,7 +60,6 @@ COMPANIES = ['广发证券', '中信证券', '招商证券', '中信建投', '�
 DASHBOARD_DIR = '/Users/peter/Desktop/券商分析数据/行业分析'
 DATA_DIR = '/Users/peter/Desktop/券商分析数据'
 GIT_DIR = '/Users/peter/Desktop/git'
-OUT_PATH = os.path.join(GIT_DIR, 'index.html')
 
 # ── Step 0: Sync dashboard and brief files to git folder ──
 def sync_files():
@@ -29,13 +67,12 @@ def sync_files():
     count = 0
 
     # Dashboard files (with nav-link injection for triangle navigation)
-    for p in PERIODS:
+    for pi, p in enumerate(PERIODS):
         src = os.path.join(DASHBOARD_DIR, f'8家券商_{p}_分析仪表板.html')
         dst = os.path.join(GIT_DIR, f'8家券商_{p}_分析仪表板.html')
         if not os.path.exists(src):
             print(f"  ✗ 未找到仪表板: {src}")
             continue
-        other = '2025Q3' if p == '2026Q1' else '2026Q1'
         with open(src, 'r', encoding='utf-8') as f:
             content = f.read()
         # Inject nav-links into dashboard (idempotent - checks if already present)
@@ -57,13 +94,17 @@ def sync_files():
                 '.tab-btn { padding: 10px 12px; font-size: 12px; }',
                 '.tab-btn { padding: 10px 12px; font-size: 12px; }\n    .nav-link { padding: 10px 12px; font-size: 12px; }'
             )
-            # HTML nav links
+            # HTML nav links — all other periods
+            other_links = ''
+            for p2 in PERIODS:
+                if p2 == p: continue
+                other_links += f'<a href="8家券商_{p2}_分析仪表板.html" class="nav-link">{PERIOD_SHORT[p2]}</a>\n'
+            other_links += '<span class="nav-sep"></span>\n'
             content = content.replace(
                 '<div class="tab-nav" id="tabNav">\n<button class="tab-btn active">',
                 f'<div class="tab-nav" id="tabNav">\n'
                 f'<a href="index.html" class="nav-link">← 返回首页</a>\n'
-                f'<a href="8家券商_{other}_分析仪表板.html" class="nav-link">{other}</a>\n'
-                f'<span class="nav-sep"></span>\n'
+                f'{other_links}'
                 f'<button class="tab-btn active">'
             )
         with open(dst, 'w', encoding='utf-8') as f:
@@ -142,8 +183,11 @@ for p in PERIODS:
         e = raw[code]
         kpi = e.get('kpi', {})
         compact[code] = {'name': e.get('name', CODE_TO_NAME.get(code,'?')), 'kpi': kpi}
-    # Dynamic ranking by revenue
-    order = sorted(compact.keys(), key=lambda c: compact[c]['kpi'].get('revenue', 0), reverse=True)
+    # Dynamic ranking by revenue (handle None)
+    def safe_rev(code):
+        v = compact[code]['kpi'].get('revenue', 0)
+        return v if v is not None else 0
+    order = sorted(compact.keys(), key=safe_rev, reverse=True)
     all_data[p] = compact
     all_order[p] = order
 
@@ -498,7 +542,7 @@ function switchPeriod(period) {{
   renderCompanyCards(period);
 }}
 
-renderCompanyCards("2026Q1");
+renderCompanyCards("' + PERIODS[0] + '");
 </script>
 
 </body>
