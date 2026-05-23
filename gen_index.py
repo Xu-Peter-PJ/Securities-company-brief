@@ -48,6 +48,10 @@ def detect_periods():
 
 PERIODS, PERIOD_LABEL, PERIOD_SHORT = detect_periods()
 
+# Custom sort: 2026Q1 > 2025FY > 2025Q3 > others
+PERIOD_ORDER = {'2026Q1': 0, '2025FY': 1, '2025Q3': 2}
+PERIODS.sort(key=lambda p: PERIOD_ORDER.get(p, 99))
+
 CODE_TO_NAME = {
     '000776':'广发证券', '600030':'中信证券', '600999':'招商证券',
     '601066':'中信建投', '601211':'国泰海通', '601688':'华泰证券',
@@ -260,8 +264,8 @@ body {
 }
 .toolbar-label { font-size: 13px; color: var(--text-light); font-weight: 500; white-space: nowrap; }
 .period-btn {
-  padding: 7px 20px; font-size: 13px; font-weight: 600; color: var(--text-light);
-  background: var(--bg); border: 1px solid var(--border); border-radius: 20px;
+  padding: 4px 14px; font-size: 12px; font-weight: 600; color: var(--text-light);
+  background: var(--bg); border: 1px solid var(--border); border-radius: 16px;
   cursor: pointer; transition: all 0.2s;
 }
 .period-btn:hover { background: #e8eef8; border-color: var(--blue); }
