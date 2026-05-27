@@ -181,9 +181,9 @@ body {
 
 <div class="toolbar">
 <span class="toolbar-label">报告期间：</span>
-<button class="period-btn active" onclick="switchPeriod('2026Q1')">2026年一季报</button>
-<button class="period-btn" onclick="switchPeriod('2025FY')">2025年年报</button>
-<button class="period-btn" onclick="switchPeriod('2025Q3')">2025年三季报</button>
+<button class="period-btn active" data-period="2026Q1" onclick="switchPeriod('2026Q1')">2026年一季报</button>
+<button class="period-btn" data-period="2025FY" onclick="switchPeriod('2025FY')">2025年年报</button>
+<button class="period-btn" data-period="2025Q3" onclick="switchPeriod('2025Q3')">2025年三季报</button>
 
 </div>
 
@@ -577,10 +577,7 @@ function renderCompanyCards(period) {
 
 function switchPeriod(period) {
   document.querySelectorAll(".period-btn").forEach(function(b) {
-    b.classList.remove("active");
-    if (b.getAttribute("onclick") && b.getAttribute("onclick").indexOf("'" + period + "'") !== -1) {
-      b.classList.add("active");
-    }
+    b.classList.toggle("active", b.getAttribute("data-period") === period);
   });
   document.querySelectorAll(".period-content").forEach(function(c) {
     c.classList.remove("active");
@@ -590,7 +587,7 @@ function switchPeriod(period) {
   renderCompanyCards(period);
 }
 
-renderCompanyCards("' + PERIODS[0] + '");
+renderCompanyCards("2026Q1");
 </script>
 
 </body>

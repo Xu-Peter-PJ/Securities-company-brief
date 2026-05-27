@@ -447,7 +447,7 @@ html = f'''<!DOCTYPE html>
 
 for pi, p in enumerate(PERIODS):
     cls = 'period-btn active' if pi == 0 else 'period-btn'
-    html += f'<button class="{cls}" onclick="switchPeriod(\'{p}\')">{PERIOD_LABEL[p]}</button>\n'
+    html += f'<button class="{cls}" data-period="{p}" onclick="switchPeriod(\'{p}\')">{PERIOD_LABEL[p]}</button>\n'
 
 html += '''
 </div>
@@ -533,10 +533,7 @@ function renderCompanyCards(period) {{
 
 function switchPeriod(period) {{
   document.querySelectorAll(".period-btn").forEach(function(b) {{
-    b.classList.remove("active");
-    if (b.getAttribute("onclick") && b.getAttribute("onclick").indexOf("'" + period + "'") !== -1) {{
-      b.classList.add("active");
-    }}
+    b.classList.toggle("active", b.getAttribute("data-period") === period);
   }});
   document.querySelectorAll(".period-content").forEach(function(c) {{
     c.classList.remove("active");
@@ -546,7 +543,7 @@ function switchPeriod(period) {{
   renderCompanyCards(period);
 }}
 
-renderCompanyCards("' + PERIODS[0] + '");
+renderCompanyCards("{PERIODS[0]}");
 </script>
 
 </body>
