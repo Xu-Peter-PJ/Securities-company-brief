@@ -4,137 +4,289 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>券商同业对标 · 全期分析仪表板</title>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0/dist/chartjs-plugin-datalabels.min.js"></script>
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;background:#f0f2f5;overflow-x:hidden}
-.main-header{background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460);color:#fff;padding:14px 24px;position:sticky;top:0;z-index:110}
-.main-header h1{font-size:18px;font-weight:700}
-.main-header p{font-size:11px;opacity:.65;margin-top:2px}
-.period-nav{display:flex;background:#1a1a2e;padding:0 10px;overflow-x:auto;position:sticky;top:68px;z-index:109}
-.period-btn{padding:8px 14px;font-size:12px;font-weight:500;color:rgba(255,255,255,.6);cursor:pointer;border:none;background:none;border-bottom:3px solid transparent;transition:.2s;white-space:nowrap;display:flex;align-items:center;gap:5px}
-.period-btn:hover{color:#fff;background:rgba(255,255,255,.05)}
-.period-btn.active{color:#fff;border-bottom-color:#4fc3f7;font-weight:600}
-.period-btn .badge{font-size:9px;padding:1px 6px;border-radius:8px;background:rgba(255,255,255,.1);color:rgba(255,255,255,.5)}
-.period-btn.active .badge{background:#4fc3f7;color:#1a1a2e}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; overflow: hidden; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif; }
 
-.dash-nav{display:flex;background:#fff;border-bottom:2px solid #e8ecf1;padding:0 10px;overflow-x:auto;position:sticky;top:110px;z-index:108}
-.dash-btn{padding:8px 14px;font-size:12px;font-weight:500;color:#888;cursor:pointer;border:none;background:none;border-bottom:3px solid transparent;transition:.2s;white-space:nowrap}
-.dash-btn:hover{color:#1a1a2e;background:#f8f9fa}
-.dash-btn.active{color:#0f3460;border-bottom-color:#0f3460;font-weight:600}
+/* ===== 顶部标题栏 ===== */
+.top-bar {
+  background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+  color: #fff;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+.top-bar h1 { font-size: 17px; font-weight: 700; letter-spacing: 0.5px; }
+.top-bar .subtitle { font-size: 11px; opacity: 0.55; }
 
-.content-wrap{padding:20px;max-width:1440px;margin:0 auto;min-height:70vh}
-.period-title{font-size:15px;font-weight:600;color:#1a1a2e;margin-bottom:16px;padding:10px 16px;background:#fff;border-radius:8px;border-left:4px solid #0f3460}
-.tab-panel{display:none}
-.tab-panel.active{display:block}
+/* ===== 期间 Tab 导航 ===== */
+.period-nav {
+  display: flex;
+  background: #1a1a2e;
+  padding: 0 8px;
+  overflow-x: auto;
+  flex-shrink: 0;
+  -webkit-overflow-scrolling: touch;
+}
+.period-nav::-webkit-scrollbar { height: 4px; }
+.period-nav::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 2px; }
+.period-btn {
+  padding: 10px 16px;
+  font-size: 12px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.55);
+  cursor: pointer;
+  border: none;
+  background: none;
+  border-bottom: 3px solid transparent;
+  transition: all 0.2s;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-family: inherit;
+  outline: none;
+}
+.period-btn:hover { color: #fff; background: rgba(255,255,255,0.04); }
+.period-btn.active { color: #fff; border-bottom-color: #4fc3f7; font-weight: 600; }
+.period-btn .badge {
+  font-size: 9px;
+  padding: 1px 7px;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.45);
+}
+.period-btn.active .badge { background: #4fc3f7; color: #1a1a2e; font-weight: 600; }
 
-.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:20px}
-@media(max-width:768px){.kpi-grid{grid-template-columns:repeat(2,1fr)}}
-.kpi-card{background:#fff;border-radius:10px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.06);text-align:center}
-.kpi-card .kpi-label{font-size:11px;color:#888;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px}
-.kpi-card .kpi-value{font-size:24px;font-weight:700;color:#1a1a2e}
-.kpi-card .kpi-yoy{font-size:12px;margin-top:2px}
-.kpi-card .kpi-yoy.up{color:#e74c3c}
-.kpi-card .kpi-yoy.down{color:#27ae60}
-.kpi-card .kpi-sub{font-size:10px;color:#999;margin-top:1px}
+/* ===== 加载提示 ===== */
+.loading-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f5f7fa;
+  z-index: 5;
+  transition: opacity 0.3s;
+}
+.loading-overlay.hidden { opacity: 0; pointer-events: none; }
+.loading-spinner { color: #888; font-size: 14px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+.spinner {
+  width: 32px; height: 32px;
+  border: 3px solid #e0e0e0;
+  border-top-color: #0f3460;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
 
-.card{background:#fff;border-radius:10px;padding:18px;box-shadow:0 2px 8px rgba(0,0,0,.06);margin-bottom:18px}
-.data-table{width:100%;border-collapse:separate;border-spacing:0;font-size:13px}
-.data-table th{background:#f8f9fa;color:#555;font-weight:600;padding:8px 10px;text-align:center;border-bottom:2px solid #e8ecf1}
-.data-table td{padding:7px 10px;text-align:center;border-bottom:1px solid #f0f2f5}
-.data-table tr:hover td{background:#f8f9ff}
-.data-table .up{color:#e74c3c}.data-table .down{color:#27ae60}.data-table .na{color:#ccc}
-.kpi-matrix-wrap{overflow-x:auto}
-.kpi-matrix-wrap table{min-width:800px}
+/* ===== iframe 容器 ===== */
+.iframe-wrap {
+  flex: 1;
+  position: relative;
+  background: #f5f7fa;
+}
+.iframe-wrap iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
 
-.section-title{font-size:16px;font-weight:600;color:#1a1a2e;margin:20px 0 14px;padding-left:12px;border-left:4px solid #0f3460}
-.section-desc{font-size:12px;color:#888;margin:-10px 0 14px 16px}
-.chart-container{position:relative;height:380px}
-@media(max-width:768px){.chart-container{aspect-ratio:1/.8;height:auto}}
-.chart-row{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-.efficiency-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px}
-.risk-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-.risk-grid .card{border-top:3px solid #2563eb}
-.risk-grid .card:nth-child(2){border-top-color:#7c3aed}
-.risk-grid .card:nth-child(3){border-top-color:#0891b2}
-.risk-grid .card:nth-child(4){border-top-color:#059669}
-@media(max-width:900px){.chart-row,.efficiency-grid,.risk-grid{grid-template-columns:1fr}}
-.footer{text-align:center;padding:10px;color:#999;font-size:11px;background:#fff;border-top:1px solid #e8ecf1}
-.loading{text-align:center;padding:80px 0;color:#999;font-size:15px}
+/* ===== 键盘提示 ===== */
+.keyboard-hint {
+  position: fixed;
+  bottom: 12px;
+  right: 16px;
+  background: rgba(0,0,0,0.7);
+  color: rgba(255,255,255,0.7);
+  font-size: 10px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  z-index: 200;
+  pointer-events: none;
+  transition: opacity 0.8s;
+}
+
+/* ===== 整体布局 ===== */
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
 </style>
 </head>
 <body>
 
-<div class="main-header">
-<h1>券商同业对标财务分析</h1>
-<p>数据来源：各公司定期报告 ｜ 单位：人民币亿元（除特别注明）</p>
+<div class="app-shell">
+
+  <!-- 标题栏 -->
+  <div class="top-bar">
+    <div>
+      <h1>🏦 券商同业对标财务分析仪表板</h1>
+    </div>
+    <span class="subtitle">覆盖 9 家 A 股上市券商 ｜ 2024Q1 — 2026Q1</span>
+  </div>
+
+  <!-- 期间导航 -->
+  <div class="period-nav" id="periodNav">
+    <button class="period-btn active" data-period="2026Q1">
+      2026Q1 <span class="badge">一季报</span>
+    </button>
+    <button class="period-btn" data-period="2025FY">
+      2025FY <span class="badge">年报</span>
+    </button>
+    <button class="period-btn" data-period="2025Q3">
+      2025Q3 <span class="badge">三季报</span>
+    </button>
+    <button class="period-btn" data-period="2025H1">
+      2025H1 <span class="badge">半年报</span>
+    </button>
+    <button class="period-btn" data-period="2025Q1">
+      2025Q1 <span class="badge">一季报</span>
+    </button>
+    <button class="period-btn" data-period="2024FY">
+      2024FY <span class="badge">年报</span>
+    </button>
+    <button class="period-btn" data-period="2024Q3">
+      2024Q3 <span class="badge">三季报</span>
+    </button>
+    <button class="period-btn" data-period="2024H1">
+      2024H1 <span class="badge">半年报</span>
+    </button>
+    <button class="period-btn" data-period="2024Q1">
+      2024Q1 <span class="badge">一季报</span>
+    </button>
+  </div>
+
+  <!-- iframe 内容区 -->
+  <div class="iframe-wrap" id="iframeWrap">
+    <div class="loading-overlay" id="loadingOverlay">
+      <div class="loading-spinner">
+        <div class="spinner"></div>
+        <span id="loadingText">加载中...</span>
+      </div>
+    </div>
+    <iframe id="contentFrame"
+            src="9家券商_2026Q1_分析仪表板.html"
+            title="期间分析仪表板"
+            sandbox="allow-scripts allow-same-origin"
+            loading="lazy">
+    </iframe>
+  </div>
+
+  <!-- 键盘提示 -->
+  <div class="keyboard-hint" id="kbHint">← → 切换期间</div>
+
 </div>
 
-<div class="period-nav" id="periodNav">
-<button class="period-btn active" data-period="2026Q1">2026Q1<span class="badge">一季报</span></button>
-<button class="period-btn" data-period="2025FY">2025FY<span class="badge">年报</span></button>
-<button class="period-btn" data-period="2025Q3">2025Q3<span class="badge">三季报</span></button>
-<button class="period-btn" data-period="2025H1">2025H1<span class="badge">半年报</span></button>
-<button class="period-btn" data-period="2025Q1">2025Q1<span class="badge">一季报</span></button>
-<button class="period-btn" data-period="2024FY">2024FY<span class="badge">年报</span></button>
-<button class="period-btn" data-period="2024Q3">2024Q3<span class="badge">三季报</span></button>
-<button class="period-btn" data-period="2024H1">2024H1<span class="badge">半年报</span></button>
-<button class="period-btn" data-period="2024Q1">2024Q1<span class="badge">一季报</span></button>
-</div>
-
-<div class="dash-nav" id="dashNav">
-<button class="dash-btn active" data-tab="0">全景概览</button>
-<button class="dash-btn" data-tab="1">核心KPI矩阵</button>
-<button class="dash-btn" data-tab="2">营收结构对比</button>
-<button class="dash-btn" data-tab="3">业务线深度</button>
-<button class="dash-btn" data-tab="4">金融投资</button>
-<button class="dash-btn" data-tab="5">效率风控</button>
-<button class="dash-btn" data-tab="6">原始报表</button>
-</div>
-
-<div class="content-wrap" id="contentWrap">
-<div id="periodTitle" class="period-title">2026Q1 2026年第一季度报告</div>
-<div id="tabPanels"></div>
-</div>
-
-<div class="footer">自动生成于 2026-06-20 ｜ 覆盖 9 家 A 股上市券商 ｜ 2024Q1 — 2026Q1</div>
-
-<script src="index_data.js"></script>
-<script src="index_charts.js"></script>
 <script>
-// Period & Dash tab switching
-document.getElementById("periodNav").addEventListener("click", function(e) {
-  var btn = e.target.closest(".period-btn");
-  if (!btn || btn.classList.contains("active")) return;
-  document.querySelectorAll(".period-btn").forEach(function(b){b.classList.remove("active")});
-  btn.classList.add("active");
-  var p = btn.dataset.period;
-  document.getElementById("periodTitle").textContent = p + " " + PERIOD_LABELS[p];
-  renderPeriod(p);
-});
-document.getElementById("dashNav").addEventListener("click", function(e) {
-  var btn = e.target.closest(".dash-btn");
-  if (!btn || btn.classList.contains("active")) return;
-  document.querySelectorAll(".dash-btn").forEach(function(b){b.classList.remove("active")});
-  btn.classList.add("active");
-  var d = ALL_DATA[currentPeriod];
-  var co = Object.keys(d);
-  switchDashTab(parseInt(btn.dataset.tab), d, co,
-    co.map(function(c){return d[c].short||c}));
-});
-// Keyboard: ↑↓ for dash tabs, ←→ for periods
-document.addEventListener("keydown", function(e) {
-  if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
-  var pBtns = Array.from(document.querySelectorAll(".period-btn"));
-  var dBtns = Array.from(document.querySelectorAll(".dash-btn"));
-  var pi = pBtns.indexOf(document.querySelector(".period-btn.active"));
-  var di = dBtns.indexOf(document.querySelector(".dash-btn.active"));
-  if (e.key === "ArrowUp" && di > 0) dBtns[di-1].click();
-  if (e.key === "ArrowDown" && di < dBtns.length-1) dBtns[di+1].click();
-  if (e.key === "ArrowLeft" && pi > 0) pBtns[pi-1].click();
-  if (e.key === "ArrowRight" && pi < pBtns.length-1) pBtns[pi+1].click();
-});
+(function() {
+  var PERIODS = ['2026Q1', '2025FY', '2025Q3', '2025H1', '2025Q1', '2024FY', '2024Q3', '2024H1', '2024Q1'];
+  var FILE_MAP = {
+    '2026Q1': '9家券商_2026Q1_分析仪表板.html',
+    '2025FY': '9家券商_2025FY_分析仪表板.html',
+    '2025Q3': '9家券商_2025Q3_分析仪表板.html',
+    '2025H1': '9家券商_2025H1_分析仪表板.html',
+    '2025Q1': '9家券商_2025Q1_分析仪表板.html',
+    '2024FY': '9家券商_2024FY_分析仪表板.html',
+    '2024Q3': '9家券商_2024Q3_分析仪表板.html',
+    '2024H1': '9家券商_2024H1_分析仪表板.html',
+    '2024Q1': '9家券商_2024Q1_分析仪表板.html'
+  };
+  var LABEL_MAP = {
+    '2026Q1': '2026年第一季报',
+    '2025FY': '2025年年报',
+    '2025Q3': '2025年第三季报',
+    '2025H1': '2025年半年报',
+    '2025Q1': '2025年第一季报',
+    '2024FY': '2024年年报',
+    '2024Q3': '2024年第三季报',
+    '2024H1': '2024年半年报',
+    '2024Q1': '2024年第一季报'
+  };
+
+  var currentPeriod = '2026Q1';
+  var frame = document.getElementById('contentFrame');
+  var loading = document.getElementById('loadingOverlay');
+  var loadingText = document.getElementById('loadingText');
+  var kbHint = document.getElementById('kbHint');
+
+  // 隐藏键盘提示
+  var hintTimer;
+  function flashHint() {
+    kbHint.style.opacity = '1';
+    clearTimeout(hintTimer);
+    hintTimer = setTimeout(function() { kbHint.style.opacity = '0'; }, 2000);
+  }
+
+  function switchPeriod(period) {
+    if (period === currentPeriod) return;
+    currentPeriod = period;
+
+    // 更新按钮状态
+    var btns = document.querySelectorAll('.period-btn');
+    btns.forEach(function(b) {
+      b.classList.toggle('active', b.dataset.period === period);
+    });
+
+    // 显示加载
+    loading.classList.remove('hidden');
+    loadingText.textContent = '正在加载 ' + period + ' ' + LABEL_MAP[period] + '...';
+
+    // 切换 iframe
+    frame.src = FILE_MAP[period];
+
+    // 更新页面标题
+    document.title = '券商同业对标 · ' + period + ' ' + LABEL_MAP[period];
+  }
+
+  // iframe 加载完成后隐藏 loading
+  frame.addEventListener('load', function() {
+    loading.classList.add('hidden');
+  });
+
+  // 点击切换期间
+  document.getElementById('periodNav').addEventListener('click', function(e) {
+    var btn = e.target.closest('.period-btn');
+    if (!btn) return;
+    if (btn.classList.contains('active')) return;
+    switchPeriod(btn.dataset.period);
+    flashHint();
+  });
+
+  // 键盘导航
+  document.addEventListener('keydown', function(e) {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    if (e.ctrlKey || e.metaKey || e.altKey) return;
+
+    var idx = PERIODS.indexOf(currentPeriod);
+    if (e.key === 'ArrowRight' && idx > 0) {
+      e.preventDefault();
+      switchPeriod(PERIODS[idx - 1]);
+      flashHint();
+    }
+    if (e.key === 'ArrowLeft' && idx < PERIODS.length - 1) {
+      e.preventDefault();
+      switchPeriod(PERIODS[idx + 1]);
+      flashHint();
+    }
+  });
+
+  // 初始加载完成
+  frame.addEventListener('load', function onFirstLoad() {
+    loading.classList.add('hidden');
+    frame.removeEventListener('load', onFirstLoad);
+  });
+
+  // 超时回退：5 秒后隐藏 loading（万一 iframe 加载很慢）
+  setTimeout(function() {
+    loading.classList.add('hidden');
+  }, 8000);
+})();
 </script>
 
 </body>

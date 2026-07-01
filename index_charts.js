@@ -188,7 +188,7 @@ function buildKpiGrid() {
         { label: '扣非归母净利润', key: 'deducted_np', yoy: 'deducted_np_yoy', show: true },
         { label: '加权平均ROE', key: 'roe', suffix: '%' },
         { label: '基本每股收益', key: 'eps', suffix: '元' },
-        { label: '扣非归母净利率', key: 'np_margin', suffix: '%' },
+        { label: '归母净利率', key: 'np_margin', suffix: '%' },
     ];
     let totalRev = 0, totalNP = 0;
     for (const sc of ORDER) { const k = DATA[sc].kpi; if (k.revenue) totalRev += k.revenue; if (k.np) totalNP += k.np; }
@@ -280,13 +280,13 @@ function buildKpiMatrix() {
     const metrics = [
         { key: 'revenue', label: '营业总收入', fmt: 'money', yoyKey: 'revenue_yoy' },
         { key: 'np', label: '归母净利润', fmt: 'money', yoyKey: 'np_yoy' },
-        { key: 'deducted_np', label: '扣非归母净利润', fmt: 'money', yoyKey: 'deducted_np_yoy' },
+        { key: 'deducted_np', label: '扣非净利润', fmt: 'money', yoyKey: 'deducted_np_yoy' },
         { key: 'eps', label: '基本每股收益', fmt: 'raw', unit: '元', yoyKey: 'eps_yoy' },
         { key: 'roe', label: '加权平均ROE', fmt: 'raw', unit: '%', yoyKey: 'roe_yoy', yoyFmt: 'bp' },
-        { key: 'np_margin', label: '扣非归母净利率', fmt: 'raw', unit: '%', yoyKey: 'np_margin_chg', yoyFmt: 'bp' },
+        { key: 'np_margin', label: '归母净利率', fmt: 'raw', unit: '%', yoyKey: 'np_margin_chg', yoyFmt: 'bp' },
         { key: 'cost_ratio', label: '管理费率', fmt: 'raw', unit: '%', yoyKey: 'cost_ratio_chg', yoyFmt: 'bp' },
         { key: 'total_assets', label: '总资产', fmt: 'money', yoyKey: 'total_assets_yoy' },
-        { key: 'net_assets', label: '归母净资产', fmt: 'money', yoyKey: 'net_assets_yoy' },
+        { key: 'net_assets', label: '净资产', fmt: 'money', yoyKey: 'net_assets_yoy' },
     ];
     function fmtYoy(v, fmt) {
         if (v == null) return null;
@@ -740,7 +740,7 @@ function buildEffMarginChart() {
             plugins: {
                 legend: { position: 'top', labels: { padding: 6 } },
                 datalabels: { display: false },
-                title: { display: true, text: '扣非归母净利率 = 扣非归母净利润 / 营业总收入 × 100%', font: { size: 11 }, color: '#888', padding: { bottom: 8 } },
+                title: { display: true, text: '归母净利率 = 扣非归母净利润 / 营业总收入 × 100%', font: { size: 11 }, color: '#888', padding: { bottom: 8 } },
             },
             scales: { y: { beginAtZero: true, title: { display: true, text: '%' } } },
         },
